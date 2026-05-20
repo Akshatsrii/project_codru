@@ -212,7 +212,7 @@ function Signup() {
               value={value.name}
               onChange={handleChange}
               required
-              InputProps={{ startAdornment: (<InputAdornment position="start"><BadgeIcon className="text-brand-blue" /></InputAdornment>) }}
+              slotProps={{ input: { startAdornment: (<InputAdornment position="start"><BadgeIcon className="text-brand-blue" /></InputAdornment>) } }}
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
             />
 
@@ -231,14 +231,16 @@ function Signup() {
                 usernameStatus === "taken" ? "Username is already taken." :
                 usernameStatus === "available" ? "Username is available!" : ""
               }
-              InputProps={{ 
-                startAdornment: (<InputAdornment position="start"><Person className="text-brand-blue" /></InputAdornment>),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {usernameStatus === "checking" && <div className="w-4 h-4 border-2 border-brand-blue border-t-transparent rounded-full animate-spin"></div>}
-                    {usernameStatus === "available" && <span className="text-green-500 font-bold">✔</span>}
-                  </InputAdornment>
-                )
+              slotProps={{
+                input: {
+                  startAdornment: (<InputAdornment position="start"><Person className="text-brand-blue" /></InputAdornment>),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {usernameStatus === "checking" && <div className="w-4 h-4 border-2 border-brand-blue border-t-transparent rounded-full animate-spin"></div>}
+                      {usernameStatus === "available" && <span className="text-green-500 font-bold">✔</span>}
+                    </InputAdornment>
+                  )
+                }
               }}
               sx={{ 
                 '& .MuiOutlinedInput-root': { borderRadius: '12px' },
@@ -250,29 +252,32 @@ function Signup() {
               fullWidth
               variant="outlined"
               name="email"
+              type="email"
               label="Email Address"
               value={value.email}
               onChange={handleChange}
               required
-              InputProps={{
-                startAdornment: (<InputAdornment position="start"><Email className="text-brand-blue" /></InputAdornment>),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {!value.isEmailVerified && value.email && (
-                      <button 
-                        type="button"
-                        onClick={handleEmailVerification}
-                        className="flex items-center gap-2 text-xs font-bold text-brand-orange hover:underline disabled:opacity-50 disabled:no-underline"
-                        disabled={!!timer || isOtpSending}
-                      >
-                        {isOtpSending ? (
-                          <><div className="w-3 h-3 border-2 border-brand-orange border-t-transparent rounded-full animate-spin"></div> Sending...</>
-                        ) : (timer ? `Resend in ${timer}s` : "Verify")}
-                      </button>
-                    )}
-                    {value.isEmailVerified && <span className="text-green-500 font-bold">✔ Verified</span>}
-                  </InputAdornment>
-                )
+              slotProps={{
+                input: {
+                  startAdornment: (<InputAdornment position="start"><Email className="text-brand-blue" /></InputAdornment>),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {!value.isEmailVerified && value.email.length > 3 && value.email.includes("@") && (
+                        <button 
+                          type="button"
+                          onClick={handleEmailVerification}
+                          className="flex items-center gap-2 text-xs font-bold text-brand-orange hover:underline disabled:opacity-50 disabled:no-underline"
+                          disabled={!!timer || isOtpSending}
+                        >
+                          {isOtpSending ? (
+                            <><div className="w-3 h-3 border-2 border-brand-orange border-t-transparent rounded-full animate-spin"></div> Sending...</>
+                          ) : (timer ? `Resend in ${timer}s` : "Verify")}
+                        </button>
+                      )}
+                      {value.isEmailVerified && <span className="text-green-500 font-bold">✔ Verified</span>}
+                    </InputAdornment>
+                  )
+                }
               }}
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
             />
@@ -280,12 +285,12 @@ function Signup() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <TextField
                 fullWidth variant="outlined" name="password" type="password" label="Password" value={value.password} onChange={handleChange} required
-                InputProps={{ startAdornment: (<InputAdornment position="start"><Lock className="text-brand-blue" /></InputAdornment>) }}
+                slotProps={{ input: { startAdornment: (<InputAdornment position="start"><Lock className="text-brand-blue" /></InputAdornment>) } }}
                 sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
               <TextField
                 fullWidth variant="outlined" name="cpassword" type="password" label="Confirm Password" value={value.cpassword} onChange={handleChange} required
-                InputProps={{ startAdornment: (<InputAdornment position="start"><Lock className="text-brand-blue" /></InputAdornment>) }}
+                slotProps={{ input: { startAdornment: (<InputAdornment position="start"><Lock className="text-brand-blue" /></InputAdornment>) } }}
                 sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
             </div>
@@ -336,7 +341,7 @@ function Signup() {
           </button>
 
           <p className="mt-8 text-center text-gray-400 text-sm font-medium">
-            Already have an account? <NavLink to="/signin" className="text-brand-blue font-black hover:underline ml-1">Sign In</NavLink>
+            Already have an account? <NavLink to="/signin" className="text-brand-blue font-bold hover:underline ml-1">Sign In</NavLink>
           </p>
         </div>
       </div>
