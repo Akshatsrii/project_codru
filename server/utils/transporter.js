@@ -10,10 +10,12 @@ const transporter = {
         mailOptions: mailOptions
       }, {
         headers: {
-          'Authorization': `Bearer ${process.env.MICROSERVICE_SECRET}`,
-          maxBodyLength: Infinity,
-          maxContentLength: Infinity
-        }
+          'Authorization': `Bearer ${process.env.MICROSERVICE_SECRET}`
+        },
+        // 🚨 CRITICAL AXIOS 1.16+ FIX: 
+        // These MUST be root-level properties here, NOT inside the headers block!
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity
       });
 
       // If your old code uses a callback (error, info) => {...}

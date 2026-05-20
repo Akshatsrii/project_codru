@@ -54,6 +54,9 @@ router.post('/send', async (req, res) => {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`
             },
+            // 🚨 AXIOS v1.16+ FIX: Prevents large text strings from triggering payload limits
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity
         });
 
         if (response.data && response.data.messages) {
@@ -69,7 +72,7 @@ router.post('/send', async (req, res) => {
                 status: 'sent'
             });
 
-            // 4. 🚨 THE CRITICAL FIX: Update Contact using 'to' (not 'from'!)
+            // 4. THE CRITICAL FIX: Update Contact using 'to' (not 'from'!)
             await Contact.findOneAndUpdate(
                 { phoneNumber: to }, // or 'fromNumber' in webhook
                 { 
@@ -78,12 +81,11 @@ router.post('/send', async (req, res) => {
                         lastSeen: new Date(),
                         unreadCount: 0
                     }
-                
                 },
                 { 
                     upsert: true, 
                     new: true, 
-                    // 🚨 THIS IS THE FIX: It tells Mongoose to ignore schema strictness here
+                    // THIS IS THE FIX: It tells Mongoose to ignore schema strictness here
                     strict: false 
                 }
             );
@@ -140,7 +142,7 @@ router.post('/webhook', async (req, res) => {
                 const fromNumber = msg.from; 
                 const senderName = contactInfo?.profile?.name || "New Student";
                 
-                // 🚨 Variables declared perfectly
+                // Variables declared perfectly
                 let msgText = "";
                 let msgType = msg.type || "text";
                 let mediaUrl = null;
@@ -148,7 +150,7 @@ router.post('/webhook', async (req, res) => {
                 // Dynamically grab your live backend URL (or fallback to localhost)
                 const BASE_URL = process.env.VITE_API || "https://api.curiousteamlearning.com";
 
-                // 🚨 Media Detection Logic
+                // Media Detection Logic
                 if (msgType === "text") {
                     msgText = msg.text?.body || "";
                 } else if (msgType === "image") {
@@ -196,7 +198,8 @@ router.post('/webhook', async (req, res) => {
                     {
                         $setOnInsert: {
                             contactId: savedContact._id,
-                            name: savedContact.name || incomingNumber,
+                            // 🚨 Fixed the variable bug from 'incomingNumber' to 'fromNumber'
+                            name: savedContact.name || fromNumber,
                             status: 'New' // Instantly marks them as a New Lead!
                         }
                     },
@@ -308,7 +311,7 @@ router.post('/contacts/reset-unread/:id', async (req, res) => {
 });
 
 // ==========================================
-// 7. POST: MANUALLY ADD A NEW CONTACT (Paste this right below it!)
+// 7. POST: MANUALLY ADD A NEW CONTACT
 // ==========================================
 router.post('/contacts', async (req, res) => {
     try {
@@ -352,7 +355,7 @@ router.post('/contacts', async (req, res) => {
 });
 
 // ==========================================
-// 6. POST: SEND TEMPLATE MESSAGE (Upgraded for Flows & Dynamic Headers)
+// 6. POST: SEND TEMPLATE MESSAGE
 // ==========================================
 router.post('/send-template', async (req, res) => {
     try {
@@ -402,7 +405,7 @@ router.post('/send-template', async (req, res) => {
             });
         }
 
-        // 3. 🚨 WHATSAPP FLOW FIX 🚨
+        // 3. WHATSAPP FLOW FIX
         // Look up the template in our DB to see if it's a Flow
         const templateDoc = await Template.findOne({ metaName: templateName });
 
@@ -445,7 +448,12 @@ router.post('/send-template', async (req, res) => {
         const response = await axios.post(
             `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
             payload,
-            { headers: { Authorization: `Bearer ${WHATSAPP_TOKEN}` } }
+            { 
+                headers: { Authorization: `Bearer ${WHATSAPP_TOKEN}` },
+                // 🚨 AXIOS v1.16+ FIX: Safeguards variable arrays from strict length boundaries
+                maxBodyLength: Infinity,
+                maxContentLength: Infinity
+            }
         );
 
         // 6. SAVE TO DATABASE
@@ -496,7 +504,7 @@ router.post('/templates/sync', async (req, res) => {
                 comp => comp.type === 'HEADER' && comp.format === 'IMAGE'
             );
 
-            // 🚨 NEW: Auto-detect if this template has a Flow button!
+            // NEW: Auto-detect if this template has a Flow button!
             const hasFlowButton = mt.components.some(
                 comp => comp.type === 'BUTTONS' && comp.buttons.some(b => b.type === 'FLOW')
             );
@@ -510,14 +518,14 @@ router.post('/templates/sync', async (req, res) => {
                     language: mt.language,
                     metaStatus: mt.status,
                     requiresImage: hasImageHeader,
-                    isFlow: hasFlowButton, // 👈 Saves the Flow status!
+                    isFlow: hasFlowButton, // Saves the Flow status!
                     headerImageUrl: "", 
                     isConfigured: !hasImageHeader 
                 });
                 addedCount++;
             } else {
                 existing.metaStatus = mt.status;
-                existing.isFlow = hasFlowButton; // 👈 Update existing ones
+                existing.isFlow = hasFlowButton; // Update existing ones
                 await existing.save();
             }
         } 
@@ -534,7 +542,7 @@ router.post('/templates/sync', async (req, res) => {
 // ==========================================
 router.get('/templates/ready', async (req, res) => {
     try {
-        // 🔥 This ensures the Chat UI only gets templates you have set up!
+        // This ensures the Chat UI only gets templates you have set up!
         const templates = await Template.find({ isConfigured: true, metaStatus: 'APPROVED' }).sort({ createdAt: -1 });
         res.status(200).json(templates);
     } catch (error) {
@@ -557,7 +565,7 @@ router.post('/templates', async (req, res) => {
             {
                 $set: {
                     displayName, language, headerImageUrl, buttonColor, variableCount, isVisible: isVisible !== false, sortOrder: sortOrder || 0,
-                    isConfigured: true, // 🚨 Marks it as ready for the Chat UI!
+                    isConfigured: true, // Marks it as ready for the Chat UI!
                     isActive: true
                 }
             },
@@ -623,6 +631,7 @@ router.post('/send-media', upload.single('file'), async (req, res) => {
             formData,
             { 
                 headers: { ...formData.getHeaders(), Authorization: `Bearer ${TOKEN}` },
+                // 🚨 AXIOS v1.16+ FIX: Explicitly allowed infinite binary streams
                 maxBodyLength: Infinity,
                 maxContentLength: Infinity
             }
@@ -650,7 +659,12 @@ router.post('/send-media', upload.single('file'), async (req, res) => {
         const response = await axios.post(
             `https://graph.facebook.com/v19.0/${botNumberId}/messages`,
             payload,
-            { headers: { "Content-Type": "application/json", Authorization: `Bearer ${TOKEN}` } }
+            { 
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${TOKEN}` },
+                // 🚨 AXIOS v1.16+ FIX: Explicitly settings roots here if captions run excessively long
+                maxBodyLength: Infinity,
+                maxContentLength: Infinity
+            }
         );
 
         // 3. Save to CRM Database
@@ -663,7 +677,7 @@ router.post('/send-media', upload.single('file'), async (req, res) => {
             botNumberId: botNumberId,
             messageBody: messageBody || "", // Make it blank instead of "[Sent image]" if no caption
             messageType: mediaType,
-            mediaUrl: `${BASE_URL}/media/${secureMediaId}`, // 🚨 USE THE LIVE URL HERE!
+            mediaUrl: `${BASE_URL}/media/${secureMediaId}`, // USE THE LIVE URL HERE!
             direction: 'outgoing',
             status: 'sent',
             timestamp: new Date()
@@ -706,7 +720,7 @@ router.put('/leads/:id/status', async (req, res) => {
             { new: true }
         );
 
-        // 🚨 CELEBRATION NOTIFICATION
+        // CELEBRATION NOTIFICATION
         if (status === 'Converted') {
             try {
                 // Find all CuTe Admins/Team to celebrate
@@ -741,7 +755,7 @@ router.get('/leads/:phoneNumber', async (req, res) => {
         
         let lead = await Lead.findOne({ phoneNumber: cleanNum });
         
-        // 🚨 AUTO-HEAL: If no lead exists, let's create one using their existing Contact info!
+        // AUTO-HEAL: If no lead exists, let's create one using their existing Contact info!
         if (!lead) {
             const Contact = require('../models/Contact'); // Import Contact model locally
             const existingContact = await Contact.findOne({ phoneNumber: cleanNum });
@@ -770,7 +784,7 @@ router.get('/leads/:phoneNumber', async (req, res) => {
 // ==========================================
 router.post('/tasks', authenticate, async (req, res) => {
     try {
-        // 🚨 Destructure priority from req.body
+        // Destructure priority from req.body
         const { title, description, dueDate, leadId, assignedStaff, addToCalendar, priority } = req.body;
         
         const cleanLeadId = leadId && leadId.trim() !== "" ? leadId : undefined;
@@ -788,7 +802,7 @@ router.post('/tasks', authenticate, async (req, res) => {
             leadId: cleanLeadId,
             assignedTo: assignedUserIds,
             isCalendarSynced: addToCalendar || false,
-            priority: priority || 'Medium' // 🚨 Save the priority!
+            priority: priority || 'Medium' // Save the priority!
         });
 
         const populatedTask = await Task.findById(newTask._id)

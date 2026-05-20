@@ -15,7 +15,7 @@ interface Lead {
     phoneNumber: string;
     status: string;
     description?: string;
-    assignedTo?: { _id: string, name: string, username: string, photo?: string }[]; // 🚨 ADDED THIS
+    assignedTo?: { _id: string, name: string, username: string, photo?: string }[];
     createdAt: string;
 }
 
@@ -53,6 +53,7 @@ const PriorityBadge = ({ priority }: { priority?: string }) => {
         </div>
     );
 };
+
 const CRM = () => {
     // Primary Tabs & Views
     const [activeTab, setActiveTab] = useState<'tasks' | 'pipeline' | 'split'>('tasks');
@@ -69,7 +70,7 @@ const CRM = () => {
     const [filterInput, setFilterInput] = useState("");
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
     
-    // 🚨 NEW: Task Modal Search States
+    // Task Modal Search States
     const [taskTeamSearch, setTaskTeamSearch] = useState("");
     const [showTaskTeamDropdown, setShowTaskTeamDropdown] = useState(false);
 
@@ -86,8 +87,8 @@ const CRM = () => {
     const [showTaskModal, setShowTaskModal] = useState(false);
     const [showLeadModal, setShowLeadModal] = useState(false);
     const [editTaskData, setEditTaskData] = useState<Task | null>(null);
-    const [editLeadData, setEditLeadData] = useState<Lead | null>(null); // 🚨 NEW
-    const [expandedItem, setExpandedItem] = useState<{title: string, description: string} | null>(null); // 🚨 NEW
+    const [editLeadData, setEditLeadData] = useState<Lead | null>(null);
+    const [expandedItem, setExpandedItem] = useState<{title: string, description: string} | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
     // Form States
@@ -129,7 +130,6 @@ const CRM = () => {
 
             const [leadsRes, tasksRes, teamRes] = await Promise.all([
                 axios.get(`${API_BASE}/leads`, { headers }),
-                
                 axios.get(`${API_BASE}/tasks?scope=all`, { headers }),
                 axios.get(`${API_BASE}/team`) 
             ]);
@@ -243,7 +243,7 @@ const CRM = () => {
             setEditTaskData(null);
             showToast("Task updated successfully!", "success");
         } catch (error) { 
-            console.error("Task Edit Error:", error); // 🚨 Added this so you can see exact backend errors in your console!
+            console.error("Task Edit Error:", error); 
             showToast("Failed to save edits.", "error"); 
         } finally { 
             setIsSaving(false); 
@@ -255,7 +255,7 @@ const CRM = () => {
         setIsSaving(true);
         try {
             const token = localStorage.getItem("jwtoken");
-            const currentUsername = localStorage.getItem("Username") || ""; // 🚨 Get your username
+            const currentUsername = localStorage.getItem("Username") || "";
 
             // Force assignment to self if empty
             const payload = { ...newLeadData };
@@ -272,7 +272,6 @@ const CRM = () => {
         finally { setIsSaving(false); }
     };
 
-    // 🚨 NEW: Delete & Edit Lead Handlers
     const handleDeleteLead = async (leadId: string) => {
         if (!window.confirm("Delete this lead permanently?")) return;
         setLeads(prev => prev.filter(l => l._id !== leadId));
@@ -288,7 +287,6 @@ const CRM = () => {
         setIsSaving(true);
         try {
             const token = localStorage.getItem("jwtoken");
-            // Map the assignedTo array of objects back to just their IDs for the backend
             const payload = { ...editLeadData, assignedTo: editLeadData.assignedTo?.map((u: any) => u._id) || [] };
             await axios.put(`${API_BASE}/leads/${editLeadData._id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
             
@@ -383,7 +381,6 @@ const CRM = () => {
                 </button>
 
                 <div className={`flex-1 min-w-0 flex ${isGrid ? 'flex-col' : 'flex-col md:flex-row md:items-center justify-between'} gap-2`}>
-                    {/* 🚨 FIX: Clickable Task Descriptions that respect Split View width */}
                     <div className="flex flex-col min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                             <h4 className={`text-sm font-bold truncate ${isCompleted ? 'text-gray-500 line-through' : 'text-slate-800'}`}>{task.title}</h4>
@@ -429,7 +426,7 @@ const CRM = () => {
                                 </div>
                             )}
 
-                            {/* Actions & Drag Handle (Visible on mobile, hover on desktop) */}
+                            {/* Actions & Drag Handle */}
                             <div className={`flex items-center gap-1 shrink-0 ml-1 transition-opacity ${isGrid ? 'opacity-100 md:opacity-0 group-hover:opacity-100' : 'border-l border-gray-100 pl-2 opacity-100 md:opacity-0 group-hover:opacity-100'}`}>
                                 <button onClick={() => setEditTaskData(task)} className="p-1.5 text-gray-400 hover:text-brand-blue hover:bg-blue-50 rounded-lg transition focus:opacity-100"><Edit2 size={12} /></button>
                                 <button onClick={() => handleDeleteTask(task._id)} className="p-1.5 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition focus:opacity-100"><Trash2 size={12} /></button>
@@ -451,7 +448,6 @@ const CRM = () => {
                     <p className="text-gray-500 font-medium text-sm mt-1">Track leads and manage team tasks.</p>
                 </div>
 
-                {/* 🚨 HIDDEN ON MOBILE (Moved to Bottom Nav) */}
                 <div className="hidden md:flex items-center gap-3 w-auto">
                     <div className="flex bg-slate-100 p-1 rounded-xl">
                         <button onClick={() => setActiveTab('tasks')} className={`flex items-center gap-2 px-6 py-2 text-sm font-bold rounded-lg transition-all ${activeTab === 'tasks' ? 'bg-white text-brand-blue shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
@@ -489,7 +485,6 @@ const CRM = () => {
                         />
                     </div>
 
-                    {/* 🚨 FIX 1: Removed overflow-x-auto so the dropdown can escape the container! */}
                     <div className="flex items-center gap-3 w-full md:w-auto">
                         
                         {/* SEARCHABLE FILTER DROPDOWN */}
@@ -532,7 +527,6 @@ const CRM = () => {
                             )}
                         </div>
 
-                        {/* 🚨 FIX 2: Reverted back to strict `activeTab === 'tasks'` so it hides in split view */}
                         {activeTab === 'tasks' && (
                             <>
                                 <div className="w-px h-8 bg-gray-200 hidden md:block"></div>
@@ -723,7 +717,6 @@ const CRM = () => {
                         {(activeTab === 'pipeline' || activeTab === 'split') && (
                             <div ref={kanbanRef} className={`${activeTab === 'split' ? 'relative w-1/2' : 'absolute inset-0'} overflow-x-auto overflow-y-hidden custom-scrollbar flex p-6 gap-6 z-10 scroll-smooth`}>
                                 {PIPELINE_STAGES.map(stage => {
-                                    // 🚨 NEW: Added matchesStaff logic to the Pipeline!
                                     const columnLeads = leads.filter(l => {
                                         const matchesStage = (l.status === stage || (!l.status && stage === 'New'));
                                         const matchesSearch = l.name.toLowerCase().includes(searchQuery.toLowerCase()) || l.phoneNumber.includes(searchQuery);
@@ -750,12 +743,11 @@ const CRM = () => {
                                                             </div>
                                                         </div>
                                                         
-                                                        {/* 🚨 FIX: Your Smart Click Workaround! */}
-                                                        {/* 🚨 FIX: stopPropagation on MouseDown is the secret key */}
+                                                        {/* Smart Click Workaround */}
                                                         {lead.description && (
                                                             <div 
                                                                 onMouseDown={(e) => { 
-                                                                    e.stopPropagation(); // 👈 THIS stops the parent from starting a drag
+                                                                    e.stopPropagation(); 
                                                                     clickStartPos.current = { x: e.clientX, y: e.clientY }; 
                                                                 }}
                                                                 onMouseUp={(e) => {
@@ -831,7 +823,7 @@ const CRM = () => {
             </div>
 
             {/* =========================================
-                🚨 1. EDIT TASK MODAL (MATCHES NEW DESIGN)
+                🚨 1. EDIT TASK MODAL
             ========================================= */}
             {editTaskData && (
                 <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
@@ -992,9 +984,8 @@ const CRM = () => {
             )}
 
             {/* =========================================
-                🚨 UPGRADED 2-COLUMN NEW LEAD MODAL
+                🚨 ADD NEW LEAD MODAL
             ========================================= */}
-            {/* 🚨 ADD NEW LEAD MODAL */}
             {showLeadModal && (
                 <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
                     <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-md md:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in duration-200">
@@ -1066,9 +1057,8 @@ const CRM = () => {
             )}
             
             {/* =========================================
-                🚨 2. ADD TASK MODAL (MATCHES NEW DESIGN)
+                🚨 ADD NEW TASK MODAL
             ========================================= */}
-            {/* 🚨 ADD NEW TASK MODAL */}
             {showTaskModal && (
                 <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
                     <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-md md:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in duration-200">
@@ -1108,7 +1098,6 @@ const CRM = () => {
                                         <input type="datetime-local" value={newTaskData.dueDate} onChange={e => setNewTaskData({...newTaskData, dueDate: e.target.value})} className="w-full mt-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-brand-blue" />
                                     </div>
 
-                                    {/* 🚨 RESTORED: THE INSTA-LIKE SEARCH DROPDOWN */}
                                     <div className="relative">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Assign Team Members</label>
                                         <div className="relative mt-1">

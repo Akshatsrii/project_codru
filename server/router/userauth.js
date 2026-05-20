@@ -515,6 +515,68 @@ router.post("/register", async (req, res) => {
 });
 
 // Signin route
+// router.post("/signin", async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+    
+//     if (!username || !password) {
+//       return res.status(400).json({ error: "Empty field(s)" });
+//     }
+
+//     const user = await User.findOne({ username }).select("+password");
+
+//     // 1. Check if user actually exists FIRST
+//     if (!user) {
+//       return res.status(400).json({ error: "Wrong Credentials" });
+//     }
+
+//     // 2. Now it's safe to check if they are banned
+//     if (user.isBanned) {
+//       return res.status(403).json({ error: "Your account has been suspended. Please contact support." });
+//     }
+
+//     // 3. Check the password
+//     const isMatched = await bcrypt.compare(password, user.password);
+
+//     if (!isMatched) {
+//       return res.status(400).json({ error: "Wrong Credentials" });
+//     }
+
+//     // 4. Generate Token (Make sure TOKEN_SECRET is in your Vercel Env Vars!)
+//     const token = jwt.sign(
+//       {
+//         _id: user._id,
+//         username: user.username,
+//         role: user.role,
+//         isAdmin: user.isAdmin,
+//       },
+//       process.env.TOKEN_SECRET,
+//       { expiresIn: "14d" }
+//     );
+
+//     // Ensure the cookie expiration is treated as a Number to prevent weird Date bugs
+//     const cookieExpire = process.env.COOKIEEXPIRE ? Number(process.env.COOKIEEXPIRE) : 24 * 60 * 60 * 1000;
+//     const options = {
+//       expires: new Date(Date.now() + cookieExpire), 
+//       httpOnly: true,
+//     };
+
+//     res.status(200).cookie("token", token, options).json({
+//       message: "You are in",
+//       role: user.role,
+//       username: user.username,
+//       token,
+//       photo: user.photo,
+//       name: user.name,
+//       isAdmin: user.isAdmin,
+//     });
+    
+//   } catch (err) {
+//     console.error("Sign In Error:", err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// });
+
 router.post("/signin", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -542,7 +604,7 @@ router.post("/signin", async (req, res) => {
       return res.status(400).json({ error: "Wrong Credentials" });
     }
 
-    // 4. Generate Token (Make sure TOKEN_SECRET is in your Vercel Env Vars!)
+    // 4. Generate Token (Set to 14 days)
     const token = jwt.sign(
       {
         _id: user._id,
@@ -554,11 +616,16 @@ router.post("/signin", async (req, res) => {
       { expiresIn: "14d" }
     );
 
-    // Ensure the cookie expiration is treated as a Number to prevent weird Date bugs
-    const cookieExpire = process.env.COOKIEEXPIRE ? Number(process.env.COOKIEEXPIRE) : 24 * 60 * 60 * 1000;
+    // 🚨 FIX: Change cookie fallback lifespan to match 14 days in milliseconds
+    const fourteenDaysInMs = 14 * 24 * 60 * 60 * 1000; 
+    const cookieExpire = process.env.COOKIEEXPIRE ? Number(process.env.COOKIEEXPIRE) : fourteenDaysInMs;
+    
     const options = {
       expires: new Date(Date.now() + cookieExpire), 
       httpOnly: true,
+      // 🚨 CRITICAL PRODUCTION FLAGS: Required for cross-domain cookies (Vercel client -> Render backend)
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
     };
 
     res.status(200).cookie("token", token, options).json({
