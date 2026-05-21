@@ -30,7 +30,10 @@ const username = localStorage.getItem("Username");
 
 // --- 1. GENERAL SETTINGS ---
 const GeneralSettings = () => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme, toggleTheme } = useContext(ThemeContext) as { 
+    theme: string | boolean; 
+    toggleTheme: () => void 
+  };
 
   return (
     <div className="animate-fade-in-up">
