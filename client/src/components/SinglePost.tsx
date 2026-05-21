@@ -217,7 +217,7 @@ const handleLike = async () => {
 
         {/* Post Image */}
         {post.imageUrl && (
-          <div className="w-full max-h-[600px] overflow-hidden bg-gray-50 flex items-center justify-center">
+          <div className="w-full max-h-150 overflow-hidden bg-gray-50 flex items-center justify-center">
             <img src={post.imageUrl} alt="Post content" className="w-full h-full object-contain" />
           </div>
         )}
@@ -272,7 +272,7 @@ const handleLike = async () => {
               post.comments.map((comment: any, index: number) => (
                 <div key={index} className="flex flex-col gap-2">
                   <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-gray-200">
+                    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-gray-200">
                       {comment.user?.photo ? <img src={comment.user.photo} alt="user" className="w-full h-full object-cover" /> : <div className="w-full h-full bg-brand-blue/20 flex items-center justify-center text-xs font-bold">{comment.user?.name?.charAt(0) || "U"}</div>}
                     </div>
                     <div className="flex-1">
@@ -291,7 +291,7 @@ const handleLike = async () => {
                   {comment.replies?.map((reply: any, rIndex: number) => (
                     <div key={rIndex} className="flex gap-3 ml-10 mt-2">
                       {/* 1. The Avatar Circle */}
-                      <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0 border border-gray-200 bg-brand-orange text-white flex items-center justify-center text-[10px] font-bold shadow-sm">
+                      <div className="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-gray-200 bg-brand-orange text-white flex items-center justify-center text-[10px] font-bold shadow-sm">
                         {reply.user?.photo ? (
                           <img src={reply.user.photo} alt="user" className="w-full h-full object-cover" />
                         ) : (
@@ -314,7 +314,7 @@ const handleLike = async () => {
           {/* Comment Input (Only shown if logged in) */}
           {isLoggedIn && (
             <form onSubmit={handleCommentSubmit} className="mt-4 flex gap-2 items-center border-t border-gray-100 pt-4">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-gray-200">
+              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-gray-200">
                 {userData?.Photo ? <img src={userData.Photo} alt="You" className="w-full h-full object-cover" /> : <div className="w-full h-full bg-brand-orange text-white flex items-center justify-center text-xs font-bold">{userData?.Name?.charAt(0) || "U"}</div>}
               </div>
               <input id="comment-input" type="text" placeholder="Add a cute comment..." value={commentInput} onChange={(e) => setCommentInput(e.target.value)} className="flex-1 bg-white border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue/50" />

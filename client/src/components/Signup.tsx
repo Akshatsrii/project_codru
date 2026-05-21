@@ -350,13 +350,12 @@ function Signup() {
       <Dialog 
         open={open} 
         onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') setOpen(false); }}
-        disableEscapeKeyDown
-        PaperProps={{ style: { borderRadius: '24px', padding: '10px' } }}
+        slotProps={{ paper: { style: { borderRadius: '24px', padding: '10px' } } }}
       >
         <div className="p-8 text-center flex flex-col items-center">
           <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4"><Email className="text-brand-blue" fontSize="large" /></div>
           <h3 className="text-2xl font-display font-bold text-brand-blue mb-2">Verify Your Email</h3>
-          <p className="text-gray-500 mb-8 text-sm max-w-[250px]">We've sent a 4-digit code to <br/><span className="font-bold text-gray-700">{value.email}</span></p>
+          <p className="text-gray-500 mb-8 text-sm max-w-62.5">We've sent a 4-digit code to <br/><span className="font-bold text-gray-700">{value.email}</span></p>
           
           <div className="flex justify-center gap-3">
             {[0, 1, 2, 3].map((index) => (

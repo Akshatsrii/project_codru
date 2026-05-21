@@ -472,7 +472,7 @@ const CuteFeed = ({ userData, refreshTrigger }: CuteFeedProps) => {
 
             {/* Post Image */}
             {post.imageUrl && (
-              <div className="w-full max-h-[600px] overflow-hidden bg-gray-50 flex items-center justify-center">
+              <div className="w-full max-h-150 overflow-hidden bg-gray-50 flex items-center justify-center">
                 <img 
                   src={post.imageUrl} 
                   alt="Post content"
@@ -586,7 +586,7 @@ const CuteFeed = ({ userData, refreshTrigger }: CuteFeedProps) => {
                   onSubmit={(e) => handleCommentSubmit(post._id, e)} 
                   className="mt-2 flex gap-2 items-center"
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-gray-200">
+                  <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-gray-200">
                     {userData?.Photo ? (
                       <img src={userData.Photo} alt="You" className="w-full h-full object-cover" />
                     ) : (

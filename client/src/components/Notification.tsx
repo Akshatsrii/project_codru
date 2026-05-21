@@ -196,15 +196,15 @@ const Notification = ({
     <div 
       ref={notificationRef}
       className={`
-        fixed z-[60] bg-white overflow-hidden flex flex-col p-5 border border-gray-100
+        fixed z-60 bg-white overflow-hidden flex flex-col p-5 border border-gray-100
         /* 📱 MOBILE: Bottom Sheet (Sits right above the bottom nav) */
         bottom-16 left-0 w-full max-h-[75vh] rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.15)] animate-slide-up
         /* 💻 DESKTOP: Top Right Dropdown */
-        md:bottom-auto md:top-20 md:right-8 md:left-auto md:w-[400px] md:max-h-[80vh] md:rounded-3xl md:shadow-2xl md:animate-fade-in-down
+        md:bottom-auto md:top-20 md:right-8 md:left-auto md:w-100 md:max-h-[80vh] md:rounded-3xl md:shadow-2xl md:animate-fade-in-down
         ${customClasses || ""}
       `}
     >
-      <div className="flex justify-between items-center mb-4 flex-shrink-0">
+      <div className="flex justify-between items-center mb-4 shrink-0">
         <div className="flex items-center gap-2 text-brand-blue">
           <Bell className="w-5 h-5" />
           <h3 className="font-display font-bold text-lg text-gray-800">Notifications</h3>
@@ -222,7 +222,7 @@ const Notification = ({
         )}
       </div>
       
-      <hr className="border-gray-100 mb-4 flex-shrink-0" />
+      <hr className="border-gray-100 mb-4 shrink-0" />
 
       {/* Added flex-1 to this container so it scrolls perfectly inside the fixed height sheet */}
       <div className="flex-1 overflow-y-auto pr-2 dashboard-content-scroll">

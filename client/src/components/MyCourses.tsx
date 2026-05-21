@@ -316,7 +316,7 @@ const MyCourses: React.FC<MyCoursesProps> = ({ role, selectedStudentUsername }) 
               <div className="p-6 md:p-8">
                 
                 {role?.toLowerCase() === 'student' && isPendingGraduation && (
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-5 mb-8 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
+                  <div className="bg-linear-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-5 mb-8 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
                     <div>
                       <h4 className="text-green-800 font-bold flex items-center gap-2 mb-1">
                         <GraduationCap size={18} /> Graduation Proposed!
@@ -363,7 +363,7 @@ const MyCourses: React.FC<MyCoursesProps> = ({ role, selectedStudentUsername }) 
                 <div className="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-5 relative overflow-hidden mb-8">
                   <Quote className="absolute -top-2 -left-2 text-amber-500/10 rotate-180" size={80} />
                   <div className="relative z-10 flex gap-4 items-start">
-                    <div className="bg-amber-100 p-2 rounded-xl flex-shrink-0 mt-1"><Lightbulb className="text-amber-600" size={20} /></div>
+                    <div className="bg-amber-100 p-2 rounded-xl shrink-0 mt-1"><Lightbulb className="text-amber-600" size={20} /></div>
                     <div>
                       <h5 className="text-xs font-bold uppercase tracking-wider text-amber-800 mb-1">Note from {teacherName}</h5>
                       <p className="text-amber-900/80 font-medium leading-relaxed italic text-sm md:text-base">"{course.mentorNote}"</p>
@@ -394,11 +394,11 @@ const MyCourses: React.FC<MyCoursesProps> = ({ role, selectedStudentUsername }) 
                           return (
                             <a key={idx} href={item.mediaUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl hover:border-brand-blue hover:shadow-sm transition bg-white group">
                               {isImage ? (
-                                <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200">
+                                <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-gray-100 border border-gray-200">
                                   <img src={item.mediaUrl} alt={item.title} className="w-full h-full object-cover" />
                                 </div>
                               ) : (
-                                <div className="bg-slate-50 p-2 rounded-lg text-gray-400 group-hover:text-brand-blue group-hover:bg-blue-50 transition flex-shrink-0">
+                                <div className="bg-slate-50 p-2 rounded-lg text-gray-400 group-hover:text-brand-blue group-hover:bg-blue-50 transition shrink-0">
                                   <Link size={18} />
                                 </div>
                               )}
@@ -434,7 +434,7 @@ const MyCourses: React.FC<MyCoursesProps> = ({ role, selectedStudentUsername }) 
                       <div className="flex flex-col gap-3">
                         {resourceItems.map((item, idx) => (
                           <a key={idx} href={item.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 border border-orange-100/50 rounded-xl hover:border-brand-orange hover:shadow-sm transition bg-orange-50/30 group">
-                            <div className="bg-orange-100 p-2 rounded-lg text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition flex-shrink-0">
+                            <div className="bg-orange-100 p-2 rounded-lg text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition shrink-0">
                               <FileText size={18} />
                             </div>
                             <div className="flex-1 min-w-0">
@@ -643,7 +643,7 @@ const MyCourses: React.FC<MyCoursesProps> = ({ role, selectedStudentUsername }) 
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2"><Lightbulb size={14} className="text-amber-500" /> Mentor's Note</label>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2"><Lightbulb size={14} className="text-amber-500" /> Mentor's Note</label>
                 <textarea value={editForm.mentorNote} onChange={(e) => setEditForm(prev => ({ ...prev, mentorNote: e.target.value }))} rows={4} className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200/50 rounded-xl focus:outline-none focus:border-amber-400 focus:bg-amber-50 transition text-amber-900 font-medium italic resize-none" />
               </div>
             </div>

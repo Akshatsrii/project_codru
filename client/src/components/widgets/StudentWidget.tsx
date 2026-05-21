@@ -119,7 +119,7 @@ const StudentWidget: React.FC<StudentWidgetProps> = ({ user }) => {
       {/* STUDENT LIST */}
       <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 relative z-10 flex flex-col gap-2 pb-2">
         {isLoading ? (
-          <div className="flex items-center justify-center h-full min-h-[150px]">
+          <div className="flex items-center justify-center h-full min-h-37.5">
             <Loader2 className="w-6 h-6 text-brand-orange animate-spin" />
           </div>
         ) : filteredStudents.length > 0 ? (
@@ -130,7 +130,7 @@ const StudentWidget: React.FC<StudentWidgetProps> = ({ user }) => {
               <div 
                 key={student._id}
                 className={`flex items-center justify-between p-3 bg-white rounded-2xl border transition-all group ${
-                  doubtCount > 0 ? 'border-rose-200 bg-gradient-to-br from-white to-rose-50/30' : 'border-gray-100 hover:border-brand-blue/30'
+                  doubtCount > 0 ? 'border-rose-200 bg-linear-to-br from-white to-rose-50/30' : 'border-gray-100 hover:border-brand-blue/30'
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -170,7 +170,7 @@ const StudentWidget: React.FC<StudentWidgetProps> = ({ user }) => {
             );
           })
         ) : (
-          <div className="flex flex-col items-center justify-center text-slate-400 bg-slate-50 border border-dashed border-slate-200 rounded-2xl h-full min-h-[150px]">
+          <div className="flex flex-col items-center justify-center text-slate-400 bg-slate-50 border border-dashed border-slate-200 rounded-2xl h-full min-h-35.7">
             <Users size={28} className="opacity-20 mb-2" />
             <h4 className="text-xs font-bold text-slate-700">No Students Found</h4>
             <button 

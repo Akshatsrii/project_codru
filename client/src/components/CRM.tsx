@@ -476,11 +476,11 @@ const CRM = () => {
             </div>
 
             {/* MAIN CONTENT AREA */}
-            <div className="flex-1 min-h-0 bg-white rounded-[24px] shadow-xl border border-gray-100 overflow-hidden flex flex-col mb-26 md:mb-0">
+            <div className="flex-1 min-h-0 bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden flex flex-col mb-26 md:mb-0">
                 
                 {/* TOOLBAR */}
                 <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex flex-wrap gap-4 items-center shrink-0 z-20 overflow-visible">
-                    <div className="relative flex-1 min-w-[200px] max-w-md">
+                    <div className="relative flex-1 min-w-50 max-w-md">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                         <input 
                             type="text" placeholder={`Search ${activeTab}...`} value={searchQuery}
@@ -615,7 +615,7 @@ const CRM = () => {
                                             <div className="flex items-center justify-between p-3 rounded-t-2xl border-b-2 bg-blue-50 border-brand-blue text-brand-blue">
                                                 <div className="flex items-center gap-2">
                                                     {member.photo ? <img src={member.photo} className="w-6 h-6 rounded-full object-cover shadow-sm border border-blue-200" /> : <div className="w-6 h-6 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] font-bold">{(member.name || "U").charAt(0).toUpperCase()}</div>}
-                                                    <h3 className="font-bold text-sm truncate max-w-[150px]">{member.name.split(' ')[0]}</h3>
+                                                    <h3 className="font-bold text-sm truncate max-w-37.5">{member.name.split(' ')[0]}</h3>
                                                     <span className="bg-white/50 px-1.5 py-0.5 rounded text-[10px] font-black">{memberTasks.length}</span>
                                                 </div>
                                                 <button onClick={() => openNewTaskModal(member.username)} className="p-1 bg-white/50 rounded-lg hover:bg-white transition" title={`Add task for ${member.name}`}><Plus size={14}/></button>
@@ -686,7 +686,7 @@ const CRM = () => {
                                     return (
                                         <div key={lead._id} className="flex flex-col w-[320px] shrink-0 h-full max-h-full">
                                             <div className="flex items-center justify-between p-3 rounded-t-2xl border-b-2 bg-orange-50 border-brand-orange text-brand-orange">
-                                                <h3 className="font-bold text-sm truncate max-w-[200px]">{lead.name}</h3>
+                                                <h3 className="font-bold text-sm truncate max-w-50">{lead.name}</h3>
                                                 <button onClick={() => openNewTaskModal(undefined, lead._id)} className="p-1 bg-white/50 rounded-lg hover:bg-white transition"><Plus size={14}/></button>
                                             </div>
                                             <div className="flex-1 overflow-y-auto custom-scrollbar p-2 bg-gray-50/50 rounded-b-2xl border-x border-b border-gray-100 space-y-2">
@@ -732,7 +732,7 @@ const CRM = () => {
                                         return matchesStage && matchesSearch && matchesStaff;
                                     });
                                     return (
-                                        <div key={stage} onDragOver={handleDragOver} onDrop={(e) => handleLeadDrop(e, stage)} className="flex flex-col w-[300px] shrink-0 h-full max-h-full">
+                                        <div key={stage} onDragOver={handleDragOver} onDrop={(e) => handleLeadDrop(e, stage)} className="flex flex-col w-75 shrink-0 h-full max-h-full">
                                             <div className={`flex items-center justify-between p-3 rounded-t-2xl border-b-2 ${stage === 'Converted' ? 'bg-green-50 border-green-500 text-green-700' : stage === 'Lost' ? 'bg-rose-50 border-rose-500 text-rose-700' : stage === 'Trial Scheduled' ? 'bg-brand-blue/10 border-brand-blue text-brand-blue' : 'bg-gray-100 border-gray-300 text-gray-700'}`}>
                                                 <h3 className="font-bold text-sm uppercase tracking-wider">{stage}</h3>
                                                 <span className="bg-white/50 px-2 py-0.5 rounded-full text-xs font-black">{columnLeads.length}</span>
@@ -809,7 +809,7 @@ const CRM = () => {
             </div>
 
             {/* 📱 MOBILE BOTTOM NAVIGATION (Floating Pill) */}
-            <div className="md:hidden fixed bottom-[88px] left-4 right-4 h-16 bg-white/95 backdrop-blur-md border border-gray-200/60 flex items-center justify-around z-[90] px-4 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+            <div className="md:hidden fixed bottom-22 left-4 right-4 h-16 bg-white/95 backdrop-blur-md border border-gray-200/60 flex items-center justify-around z-90 px-4 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
                 <button onClick={() => setActiveTab('tasks')} className={`flex flex-col items-center gap-1 flex-1 ${activeTab === 'tasks' ? 'text-brand-blue' : 'text-gray-400 hover:text-gray-600'}`}>
                     <CheckSquare size={20} className={activeTab === 'tasks' ? 'fill-blue-50' : ''} />
                     <span className="text-[10px] font-bold">Tasks</span>
@@ -834,8 +834,8 @@ const CRM = () => {
                 🚨 1. EDIT TASK MODAL (MATCHES NEW DESIGN)
             ========================================= */}
             {editTaskData && (
-                <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-md md:max-w-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-200">
+                <div className="fixed inset-0 z-1000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl md:rounded-4xl w-full max-w-md md:max-w-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-200">
                         <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-brand-blue text-white">
                             <div className="flex items-center gap-2">
                                 <Edit2 size={20} />
@@ -863,7 +863,7 @@ const CRM = () => {
                                         <textarea 
                                             value={editTaskData.description} 
                                             onChange={e => setEditTaskData({...editTaskData, description: e.target.value})} 
-                                            className="w-full mt-1 flex-1 min-h-[120px] md:min-h-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" 
+                                            className="w-full mt-1 flex-1 min-h-30 md:min-h-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" 
                                         />
                                     </div>
                                 </div>
@@ -908,7 +908,7 @@ const CRM = () => {
                                             />
                                             {/* Dropdown */}
                                             {showTaskTeamDropdown && taskTeamSearch.trim() !== "" && (
-                                                <div className="absolute z-[100] w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-48 overflow-y-auto custom-scrollbar p-1 animate-in fade-in slide-in-from-top-2">
+                                                <div className="absolute z-100 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-48 overflow-y-auto custom-scrollbar p-1 animate-in fade-in slide-in-from-top-2">
                                                     {teamMembers.filter(m => 
                                                         !editTaskData.assignedTo.some(u => u.username === m.username) && 
                                                         (m.name.toLowerCase().includes(taskTeamSearch.toLowerCase()) || 
@@ -953,7 +953,7 @@ const CRM = () => {
                                         </div>
                                         
                                         {/* Selected Staff Tags */}
-                                        <div className="flex flex-wrap gap-2 mt-3 min-h-[28px]">
+                                        <div className="flex flex-wrap gap-2 mt-3 min-h-7">
                                             {editTaskData.assignedTo.length === 0 && (
                                                 <span className="text-xs text-slate-400 italic mt-1 ml-1">No one assigned yet</span>
                                             )}
@@ -982,7 +982,7 @@ const CRM = () => {
                             </div>
                             <div className="flex gap-3">
                                 <button onClick={() => setEditTaskData(null)} className="flex-1 py-4 bg-gray-100 text-gray-600 font-black rounded-2xl hover:bg-gray-200 transition">CANCEL</button>
-                                <button onClick={handleSaveEdit} disabled={isSaving} className="flex-[2] py-4 bg-brand-blue text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:scale-100">
+                                <button onClick={handleSaveEdit} disabled={isSaving} className="flex-2 py-4 bg-brand-blue text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:scale-100">
                                     {isSaving ? <Loader2 size={18} className="animate-spin" /> : "SAVE CHANGES"}
                                 </button>
                             </div>
@@ -996,8 +996,8 @@ const CRM = () => {
             ========================================= */}
             {/* 🚨 ADD NEW LEAD MODAL */}
             {showLeadModal && (
-                <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-md md:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in duration-200">
+                <div className="fixed inset-0 z-10000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl md:rounded-4xl w-full max-w-md md:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in duration-200">
                         
                         <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-brand-blue text-white shrink-0">
                             <div className="flex items-center gap-2">
@@ -1024,7 +1024,7 @@ const CRM = () => {
                                     </div>
                                     <div className="flex-1 flex flex-col">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Notes</label>
-                                        <textarea placeholder="Context..." value={newLeadData.description} onChange={e => setNewLeadData({...newLeadData, description: e.target.value})} className="w-full mt-1 flex-1 min-h-[120px] px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" />
+                                        <textarea placeholder="Context..." value={newLeadData.description} onChange={e => setNewLeadData({...newLeadData, description: e.target.value})} className="w-full mt-1 flex-1 min-h-30 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" />
                                     </div>
                                 </div>
 
@@ -1041,7 +1041,7 @@ const CRM = () => {
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                             <input type="text" value={leadTeamSearch} onChange={(e) => { setLeadTeamSearch(e.target.value); setShowLeadTeamDropdown(true); }} placeholder="Search team..." className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm" />
                                             {showLeadTeamDropdown && leadTeamSearch.trim() !== "" && (
-                                                <div className="absolute z-[100] w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-40 overflow-y-auto p-1">
+                                                <div className="absolute z-100 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-40 overflow-y-auto p-1">
                                                     {teamMembers.filter(m => !newLeadData.assignedStaff.includes(m.username) && (m.name.toLowerCase().includes(leadTeamSearch.toLowerCase()) || m.username.toLowerCase().includes(leadTeamSearch.toLowerCase()))).map(staff => (
                                                         <div key={staff._id} onMouseDown={() => { setNewLeadData(prev => ({...prev, assignedStaff: [...prev.assignedStaff, staff.username]})); setLeadTeamSearch(""); }} className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-xl cursor-pointer transition-colors">
                                                             <div className="w-6 h-6 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center font-bold text-[10px]">{staff.name.charAt(0)}</div>
@@ -1070,8 +1070,8 @@ const CRM = () => {
             ========================================= */}
             {/* 🚨 ADD NEW TASK MODAL */}
             {showTaskModal && (
-                <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-md md:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in duration-200">
+                <div className="fixed inset-0 z-10000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl md:rounded-4xl w-full max-w-md md:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in duration-200">
                         
                         <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-brand-blue text-white shrink-0">
                             <div className="flex items-center gap-2">
@@ -1092,7 +1092,7 @@ const CRM = () => {
                                     </div>
                                     <div className="flex-1 flex flex-col">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Details</label>
-                                        <textarea value={newTaskData.description} onChange={e => setNewTaskData({...newTaskData, description: e.target.value})} className="w-full mt-1 flex-1 min-h-[120px] px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" />
+                                        <textarea value={newTaskData.description} onChange={e => setNewTaskData({...newTaskData, description: e.target.value})} className="w-full mt-1 flex-1 min-h-30 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" />
                                     </div>
                                 </div>
 
@@ -1124,7 +1124,7 @@ const CRM = () => {
                                             />
                                             
                                             {showTaskTeamDropdown && taskTeamSearch.trim() !== "" && (
-                                                <div className="absolute z-[100] w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-48 overflow-y-auto custom-scrollbar p-1 animate-in fade-in slide-in-from-top-2">
+                                                <div className="absolute z-100 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-48 overflow-y-auto custom-scrollbar p-1 animate-in fade-in slide-in-from-top-2">
                                                     {teamMembers.filter(m => 
                                                         !newTaskData.assignedStaff.includes(m.username) && 
                                                         (m.name.toLowerCase().includes(taskTeamSearch.toLowerCase()) || 
@@ -1169,7 +1169,7 @@ const CRM = () => {
                                         </div>
                                         
                                         {/* Selected Staff Tags */}
-                                        <div className="flex flex-wrap gap-2 mt-3 min-h-[28px]">
+                                        <div className="flex flex-wrap gap-2 mt-3 min-h-7">
                                             {newTaskData.assignedStaff.length === 0 && (
                                                 <span className="text-xs text-slate-400 italic mt-1 ml-1">No one assigned yet</span>
                                             )}
@@ -1220,8 +1220,8 @@ const CRM = () => {
 
             {/* 📖 FULL SCREEN READING MODAL */}
             {expandedItem && (
-                <div className="fixed inset-0 z-[20000] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden border border-white/20">
+                <div className="fixed inset-0 z-20000 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl md:rounded-4xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden border border-white/20">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-brand-blue text-white">
                             <h3 className="text-xl font-bold pr-4 truncate">{expandedItem.title}</h3>
                             <button onClick={() => setExpandedItem(null)} className="hover:bg-white/20 p-2 rounded-full transition shrink-0"><X size={20}/></button>
@@ -1236,8 +1236,8 @@ const CRM = () => {
 
             {/* ✏️ EDIT LEAD MODAL */}
             {editLeadData && (
-                <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-md md:max-w-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-200">
+                <div className="fixed inset-0 z-10000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl md:rounded-4xl w-full max-w-md md:max-w-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-200">
                         <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-brand-blue text-white">
                             <div className="flex items-center gap-2"><Edit2 size={20} /><h3 className="text-lg font-bold">Edit Lead</h3></div>
                             <button onClick={() => setEditLeadData(null)} className="hover:bg-white/20 p-1.5 rounded-full transition"><X size={20}/></button>
@@ -1250,7 +1250,7 @@ const CRM = () => {
                                         <div className="flex-1"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Name</label><input type="text" value={editLeadData.name} onChange={e => setEditLeadData({...editLeadData, name: e.target.value})} className="w-full mt-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" /></div>
                                         <div className="flex-1"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number *</label><input type="text" value={editLeadData.phoneNumber} onChange={e => setEditLeadData({...editLeadData, phoneNumber: e.target.value})} className="w-full mt-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue" /></div>
                                     </div>
-                                    <div className="flex-1 flex flex-col"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Notes / Description</label><textarea value={editLeadData.description} onChange={e => setEditLeadData({...editLeadData, description: e.target.value})} className="w-full mt-1 flex-1 min-h-[120px] px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" /></div>
+                                    <div className="flex-1 flex flex-col"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Notes / Description</label><textarea value={editLeadData.description} onChange={e => setEditLeadData({...editLeadData, description: e.target.value})} className="w-full mt-1 flex-1 min-h-30 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" /></div>
                                 </div>
 
                                 <div className="space-y-4">
@@ -1266,7 +1266,7 @@ const CRM = () => {
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                                             <input type="text" value={filterInput} onChange={(e) => { setFilterInput(e.target.value); setShowFilterDropdown(true); }} onFocus={() => setShowFilterDropdown(true)} onBlur={() => setTimeout(() => setShowFilterDropdown(false), 200)} placeholder="Search team..." className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue text-sm" />
                                             {showFilterDropdown && filterInput.trim() !== "" && (
-                                                <div className="absolute z-[100] w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-48 overflow-y-auto p-1">
+                                                <div className="absolute z-100 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-48 overflow-y-auto p-1">
                                                     {teamMembers.filter(m => !(Array.isArray(editLeadData.assignedTo) ? editLeadData.assignedTo : []).some((u: any) => u.username === m.username) && (m.name.toLowerCase().includes(filterInput.toLowerCase()) || m.username.toLowerCase().includes(filterInput.toLowerCase()))).map(staff => (
                                                         <div key={staff._id} onMouseDown={(e) => { e.preventDefault(); setEditLeadData(prev => prev ? {...prev, assignedTo: [...(Array.isArray(prev.assignedTo) ? prev.assignedTo : []), staff]} : null); setFilterInput(""); setShowFilterDropdown(false); }} className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-xl cursor-pointer transition-colors">
                                                             {staff.photo ? <img src={staff.photo} className="w-6 h-6 rounded-full object-cover shadow-sm border border-slate-200 shrink-0" /> : <div className="w-6 h-6 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center font-bold text-[10px] shrink-0">{staff.name.charAt(0).toUpperCase()}</div>}
@@ -1276,7 +1276,7 @@ const CRM = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex flex-wrap gap-2 mt-3 min-h-[28px]">
+                                        <div className="flex flex-wrap gap-2 mt-3 min-h-7">
                                             {(!editLeadData.assignedTo || (Array.isArray(editLeadData.assignedTo) && editLeadData.assignedTo.length === 0)) && (
                                                 <span className="text-xs text-slate-400 italic mt-1 ml-1">Unassigned</span>
                                             )}
@@ -1293,7 +1293,7 @@ const CRM = () => {
                             </div>
                             <div className="flex gap-3">
                                 <button onClick={() => setEditLeadData(null)} className="flex-1 py-4 bg-gray-100 text-gray-600 font-black rounded-2xl hover:bg-gray-200 transition">CANCEL</button>
-                                <button onClick={handleSaveLeadEdit} disabled={isSaving} className="flex-[2] py-4 bg-brand-blue text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+                                <button onClick={handleSaveLeadEdit} disabled={isSaving} className="flex-2 py-4 bg-brand-blue text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-50">
                                     {isSaving ? <Loader2 size={18} className="animate-spin" /> : "SAVE CHANGES"}
                                 </button>
                             </div>
@@ -1304,7 +1304,7 @@ const CRM = () => {
 
             {/* TOAST NOTIFICATION */}
             {toast.show && (
-                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[11000] animate-in fade-in slide-in-from-bottom-8 duration-300 pointer-events-none">
+                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-11000 animate-in fade-in slide-in-from-bottom-8 duration-300 pointer-events-none">
                     <div className={`flex items-center gap-2.5 px-5 py-3.5 rounded-full shadow-2xl border font-bold text-sm tracking-wide ${
                         toast.type === 'success' ? 'bg-green-50 text-green-700 border-green-200 shadow-green-900/10' : 'bg-rose-50 text-rose-700 border-rose-200 shadow-rose-900/10'
                     }`}>

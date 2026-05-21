@@ -1,9 +1,9 @@
 // Import the package as a generic object
-import LottiePackage from 'lottie-react';
+import Lottie from 'lottie-react';
 import signInAnimData from '../assets/jsonFiles/signInAnim3.json';
 
 // 🚨 BULLETPROOF FIX: Rips the function out of the object if Vite wrapped it!
-const Lottie = LottiePackage.default || LottiePackage;
+//const Lottie = LottiePackage.default || LottiePackage;
 
 function SignInAnim() {
   return (

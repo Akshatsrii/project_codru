@@ -390,7 +390,7 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
         </div>
         
         {/* The Grid */}
-        <div className="grid grid-cols-7 bg-gray-100 gap-[1px] shrink-0">{days}</div>
+        <div className="grid grid-cols-7 bg-gray-100 gap-px shrink-0">{days}</div>
 
         {/* 🚨 THE FIX: "Up Next" Mobile Agenda to beautifully fill the empty space */}
         <div className="md:hidden flex-1 bg-slate-50/50 p-4 border-t border-gray-100 flex flex-col justify-center">
@@ -439,7 +439,7 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
 
       // 🚨 RESTORED: The proper tall vertical columns for the week view!
       days.push(
-        <div key={i} className={`min-h-[400px] p-2 md:p-3 border-r border-gray-100 ${isToday ? 'bg-blue-50/30' : 'bg-white'}`}>
+        <div key={i} className={`min-h-100 p-2 md:p-3 border-r border-gray-100 ${isToday ? 'bg-blue-50/30' : 'bg-white'}`}>
           <div className="text-center mb-4">
             <div className={`text-[10px] md:text-xs font-bold uppercase tracking-wider ${isToday ? 'text-brand-blue' : 'text-gray-400'}`}>
               {dayDate.toLocaleDateString('default', { weekday: 'short' })}
@@ -468,7 +468,7 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
     // 🚨 MOBILE FIX: Keeps the horizontal swiping for phones!
     return (
       <div className="overflow-x-auto custom-scrollbar w-full pb-2">
-        <div className="grid grid-cols-7 bg-gray-100 gap-[1px] border-t border-gray-100 min-w-[700px]">
+        <div className="grid grid-cols-7 bg-gray-100 gap-px border-t border-gray-100 min-w-175">
           {days}
         </div>
       </div>
@@ -480,7 +480,7 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
     dayEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     return (
-      <div className="min-h-[400px] p-6 bg-white">
+      <div className="min-h-100 p-6 bg-white">
         <div className="max-w-3xl mx-auto space-y-4">
           {dayEvents.length === 0 ? (
             <div className="text-center py-20 text-gray-400 italic">No events scheduled for this day.</div>
@@ -511,7 +511,7 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
       </div>
 
       {/* 🚨 2. Added max-h constraint for mobile, flex-1, and min-h-0 */}
-      <div className="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden flex-1 flex flex-col min-h-0 max-h-[calc(100dvh-160px)] md:max-h-none md:min-h-[500px]">
+      <div className="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden flex-1 flex flex-col min-h-0 max-h-[calc(100dvh-160px)] md:max-h-none md:min-h-125">
         {/* --- HEADER COMPONENT --- */}
         <div className="p-4 sm:p-6 border-b border-gray-100 flex items-center justify-between bg-white gap-4">
           <div className="flex items-center gap-3">
@@ -558,7 +558,7 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
         <div className="md:hidden mt-auto border-t border-gray-100 p-3 bg-white flex items-center justify-between gap-2 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] relative z-10">
           
           {/* Day/Week/Month Toggles */}
-          <div className="flex bg-slate-100 p-1 rounded-xl flex-1 max-w-[220px]">
+          <div className="flex bg-slate-100 p-1 rounded-xl flex-1 max-w-55">
             {(['day', 'week', 'month'] as ViewMode[]).map((mode) => (
               <button key={mode} onClick={() => setView(mode)} className={`flex-1 py-1.5 text-[11px] font-bold capitalize rounded-lg transition-all ${view === mode ? 'bg-white text-brand-blue shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
                 {mode}
@@ -576,7 +576,7 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
       </div>
 
       {selectedEvent && (
-        <div className="relative z-[6650]">
+        <div className="relative z-6650">
           <EventModal 
             event={selectedEvent} 
             onClose={() => setSelectedEvent(null)} 
@@ -589,9 +589,9 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
       )}
       {/* 🚨 NEW: MOBILE DAY VIEW POPUP (Bottom Sheet) */}
       {showMobileDayView && mobileSelectedDate && (
-        <div className="fixed inset-0 z-[500] flex items-end md:items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-fade-in pb-16 md:pb-0" onClick={() => setShowMobileDayView(false)}>
+        <div className="fixed inset-0 z-500 flex items-end md:items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-fade-in pb-16 md:pb-0" onClick={() => setShowMobileDayView(false)}>
           <div 
-            className="bg-white rounded-t-3xl md:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[85vh] transform transition-transform animate-in slide-in-from-bottom-8 md:zoom-in-95 z-[500]"
+            className="bg-white rounded-t-3xl md:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[85vh] transform transition-transform animate-in slide-in-from-bottom-8 md:zoom-in-95 z-500"
             onClick={(e) => e.stopPropagation()} // Prevents clicking the backdrop from closing it
           >
             {/* Modal Header */}
@@ -608,7 +608,7 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
             </div>
             
             {/* Event List */}
-            <div className="p-4 overflow-y-auto flex-1 custom-scrollbar bg-slate-50 min-h-[250px]">
+            <div className="p-4 overflow-y-auto flex-1 custom-scrollbar bg-slate-50 min-h-62.5">
               {events.filter(e => e.date.toDateString() === mobileSelectedDate.toDateString()).length === 0 ? (
                 <div className="text-center py-10">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
@@ -655,8 +655,8 @@ const Calendar: React.FC<CalendarProps> = ({ role, selectedStudentUsername, curr
       )}
       {/* 🚨 NEW: ADD EVENT MODAL 🚨 */}
       {showAddModal && (
-        <div className="fixed inset-0 z-[500] flex items-center justify-center bg-slate-900/70 backdrop-blur-md pb-16 md:pb-0 px-4">
-          <div className="bg-white rounded-[32px] p-8 w-full max-w-md shadow-2xl border border-white/20 transform transition-all animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-500 flex items-center justify-center bg-slate-900/70 backdrop-blur-md pb-16 md:pb-0 px-4">
+          <div className="bg-white rounded-4xl p-8 w-full max-w-md shadow-2xl border border-white/20 transform transition-all animate-in zoom-in-95 duration-200">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
               <CalendarIcon className="w-5 h-5 text-brand-orange" />
               {newEventDraft.id ? "Edit Event" : (role?.toLowerCase() === 'student' ? "Add a Task" : "Schedule a Class")}

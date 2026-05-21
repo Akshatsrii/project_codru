@@ -226,7 +226,7 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ userData }) => {
             : 0;
 
           return (
-            <div key={student._id} className="bg-white rounded-[32px] p-6 shadow-lg border border-gray-50 relative group transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col h-full min-h-[300px]">
+            <div key={student._id} className="bg-white rounded-4xl p-6 shadow-lg border border-gray-50 relative group transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col h-full min-h-75">
               
               {activeDoubtCount > 0 && (
                 <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-red-500 text-white px-3 py-1 rounded-full shadow-lg shadow-red-100 animate-pulse z-10">
@@ -280,7 +280,7 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ userData }) => {
           })}
 
           {Array.from({ length: 5 - students.length }).map((_, i) => (
-            <div key={`empty-${i}`} className="border-2 border-dashed border-gray-200 rounded-[32px] flex flex-col items-center justify-center p-8 opacity-60 min-h-[300px]">
+            <div key={`empty-${i}`} className="border-2 border-dashed border-gray-200 rounded-4xl flex flex-col items-center justify-center p-8 opacity-60 min-h-75">
               <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 mb-2">
                 <Person fontSize="large" />
               </div>
@@ -347,7 +347,7 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ userData }) => {
 
               {/* Dropdown Results */}
               {searchResults.length > 0 && (
-                <div className="absolute top-[100px] left-6 right-6 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden z-30 max-h-48 overflow-y-auto custom-scrollbar">
+                <div className="absolute top-25 left-6 right-6 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden z-30 max-h-48 overflow-y-auto custom-scrollbar">
                   {searchResults.map((student) => (
                     <button
                       key={student._id}
@@ -367,7 +367,7 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ userData }) => {
               
               {/* Empty Search State */}
               {searchQuery.length > 1 && searchResults.length === 0 && !isSearching && !selectedStudent && (
-                 <div className="absolute top-[100px] left-6 right-6 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl p-4 text-center z-30">
+                 <div className="absolute top-25 left-6 right-6 mt-1 bg-white border border-gray-100 rounded-xl shadow-xl p-4 text-center z-30">
                    <p className="text-sm text-gray-500 font-medium">No students found matching "{searchQuery}"</p>
                  </div>
               )}
@@ -403,7 +403,7 @@ const StudentManagement: React.FC<StudentManagementProps> = ({ userData }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl shadow-xl w-full max-w-sm p-6 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-red-100 text-red-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-red-100 text-red-500 flex items-center justify-center shrink-0">
                 <AlertTriangle size={20} />
               </div>
               <h3 className="text-xl font-display font-bold text-gray-800">Remove Student?</h3>

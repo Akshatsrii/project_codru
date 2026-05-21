@@ -48,7 +48,7 @@ const GeneralSettings = () => {
             checked={theme === "dark" || theme === true} 
             onChange={toggleTheme} 
           />
-          <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-brand-orange"></div>
+          <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-brand-orange"></div>
         </label>
       </div>
     </div>
@@ -142,8 +142,43 @@ const AccountSettings = ({ userData, setUserData }: SettingsPanelProps) => {
 
       <h3 className="text-xl font-display font-bold text-brand-blue mb-4">Security</h3>
       <form onSubmit={handlePasswordChange} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-5">
-        <TextField label="Current Password" type={showCurrentPassword ? "text" : "password"} value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} fullWidth InputProps={{ endAdornment: ( <InputAdornment position="end"> <IconButton onClick={() => setShowCurrentPassword(!showCurrentPassword)}>{showCurrentPassword ? <VisibilityOff /> : <Visibility />}</IconButton> </InputAdornment> ) }} />
-        <TextField label="New Password" type={showNewPassword ? "text" : "password"} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} fullWidth InputProps={{ endAdornment: ( <InputAdornment position="end"> <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>{showNewPassword ? <VisibilityOff /> : <Visibility />}</IconButton> </InputAdornment> ) }} />
+        <TextField 
+          label="Current Password" 
+          type={showCurrentPassword ? "text" : "password"} 
+          value={currentPassword} 
+          onChange={(e) => setCurrentPassword(e.target.value)} 
+          fullWidth 
+          slotProps={{ 
+            input: {
+              endAdornment: ( 
+                <InputAdornment position="end"> 
+                  <IconButton onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
+                    {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton> 
+                </InputAdornment> 
+              ) 
+            }
+          }} 
+        />
+        
+        <TextField 
+          label="New Password" 
+          type={showNewPassword ? "text" : "password"} 
+          value={newPassword} 
+          onChange={(e) => setNewPassword(e.target.value)} 
+          fullWidth 
+          slotProps={{
+            input: {
+              endAdornment: ( 
+                <InputAdornment position="end"> 
+                  <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>
+                    {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton> 
+                </InputAdornment> 
+              )
+            }
+          }} 
+        />
         <div className="flex justify-end mt-2">
           <Button type="submit" variant="contained" sx={{ backgroundColor: '#1765a4', borderRadius: '10px', textTransform: 'none', fontWeight: 'bold', paddingX: 4 }}>Update Password</Button>
         </div>
@@ -165,7 +200,7 @@ const AccountSettings = ({ userData, setUserData }: SettingsPanelProps) => {
       <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
         <div className="p-6 bg-white rounded-3xl max-w-sm">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-red-100 text-red-500 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-red-100 text-red-500 flex items-center justify-center shrink-0">
               <AlertTriangle size={20} />
             </div>
             <h3 className="text-xl font-display font-bold text-gray-800">Delete Account?</h3>
@@ -492,14 +527,14 @@ const SettingsPanel = ({ userData, setUserData }: SettingsPanelProps) => {
     <div className="w-full h-full flex flex-col overflow-hidden">
       
       {/* --- HEADING --- */}
-      <div className="mb-6 md:mb-8 px-4 flex-shrink-0">
+      <div className="mb-6 md:mb-8 px-4 shrink-0">
         <h2 className="text-3xl font-display font-bold text-brand-blue text-center md:text-left">
           Settings
         </h2>
       </div>
 
       {/* --- TAB NAVIGATION --- */}
-      <div className="sticky top-0 z-30 bg-white flex justify-center md:justify-start space-x-6 md:space-x-8 border-b border-gray-100 pt-2 pb-4 mb-6 hide-scrollbar px-4 flex-shrink-0">
+      <div className="sticky top-0 z-30 bg-white flex justify-center md:justify-start space-x-6 md:space-x-8 border-b border-gray-100 pt-2 pb-4 mb-6 hide-scrollbar px-4 shrink-0">
         {tabs.map((tab) => (
           <button
             key={tab}

@@ -165,14 +165,14 @@ const PlanetryPath = () => {
     <div className="relative w-full h-full overflow-hidden bg-[#090a0f]">
       
       {/* STICKY "i" BUTTON */}
-      <div className="absolute top-6 right-6 z-[100]">
+      <div className="absolute top-6 right-6 z-100">
         <div className="group relative flex flex-col items-end">
           <button className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-display font-bold text-xl italic flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg cursor-help">
-             <span className="mb-[2px]">i</span>
+             <span className="mb-0.5">i</span>
           </button>
           
-          <div className="absolute top-14 right-0 w-72 p-5 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 text-slate-800 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform origin-top-right scale-95 group-hover:scale-100 z-[110]">
-            <p className="font-display font-bold text-[#ed7f23] text-base mb-2">Your Unique Galaxy</p>
+          <div className="absolute top-14 right-0 w-72 p-5 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/50 text-slate-800 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none transform origin-top-right scale-95 group-hover:scale-100 z-110">
+            <p className="font-display font-bold text-brand-orange text-base mb-2">Your Unique Galaxy</p>
             <p className="leading-relaxed">
               Every star in the sky shines a little differently, and so do you! ✨
               <br /><br />
@@ -258,11 +258,11 @@ const PlanetryPath = () => {
                 initial={false}
                 animate={{ x: shipPosition.x + 20, y: shipPosition.y - 60 }}
                 transition={{ type: "spring", stiffness: 40, damping: 12 }}
-                className="absolute z-[60] pointer-events-none"
+                className="absolute z-60 pointer-events-none"
                 style={{ left: 0, top: 0 }}
               >
                 <div className="flex flex-col items-center">
-                  <Rocket className="text-[#ed7f23] fill-[#ed7f23]" size={36} />
+                  <Rocket className="text-brand-orange fill-brand-orange" size={36} />
                   <motion.div 
                     animate={{ height: [6, 12, 6], opacity: [0.3, 0.7, 0.3] }} 
                     transition={{ repeat: Infinity, duration: 0.4 }} 

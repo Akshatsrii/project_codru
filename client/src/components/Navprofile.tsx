@@ -135,7 +135,7 @@ export default function Navprofile({
     <div 
       ref={navProfileRef} 
       className="
-        fixed z-[60] bg-white overflow-hidden flex flex-col p-5 border border-gray-100
+        fixed z-60 bg-white overflow-hidden flex flex-col p-5 border border-gray-100
         /* 📱 MOBILE: Bottom Sheet */
         bottom-16 left-0 w-full max-h-[85vh] rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.15)] animate-slide-up
         /* 💻 DESKTOP: Top Right Dropdown */
@@ -151,7 +151,7 @@ export default function Navprofile({
       </button>
 
       {/* Profile Header */}
-      <div className="flex flex-col items-center mt-2 mb-4 flex-shrink-0">
+      <div className="flex flex-col items-center mt-2 mb-4 shrink-0">
         <div className="relative group cursor-pointer" onClick={handlePenClick}>
           <div className="w-20 h-20 rounded-full border-4 border-brand-orange/20 overflow-hidden relative">
             {isUploading && (
@@ -183,7 +183,7 @@ export default function Navprofile({
         </span>
       </div>
 
-      <hr className="border-gray-100 my-4 flex-shrink-0" />
+      <hr className="border-gray-100 my-4 shrink-0" />
 
       {/* Action Buttons Container (Scrollable on tiny mobile screens) */}
       <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-2 pb-2">
@@ -244,7 +244,7 @@ export default function Navprofile({
       </div>
 
       {showAlert && (
-        <div className="mt-4 flex-shrink-0">
+        <div className="mt-4 shrink-0">
           <Muialert message={alertMessage} severity="error" onClose={() => setShowAlert(false)} />
         </div>
       )}

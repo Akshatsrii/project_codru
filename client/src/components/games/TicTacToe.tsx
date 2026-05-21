@@ -107,7 +107,7 @@ const TicTacToe: React.FC = () => {
             key={idx}
             onClick={() => handleClick(idx)}
             disabled={cell !== null || !isPlayerTurn || !!winner}
-            className={`w-full h-full min-h-[4rem] sm:min-h-[5rem] bg-white rounded-xl text-3xl font-black transition-all ${
+            className={`w-full h-full min-h-16 sm:min-h-20 bg-white rounded-xl text-3xl font-black transition-all ${
               !cell && isPlayerTurn && !winner ? 'hover:bg-blue-50 cursor-pointer active:scale-95' : 'cursor-default'
             } ${cell === 'X' ? 'text-brand-blue' : 'text-brand-orange'}`}
           >

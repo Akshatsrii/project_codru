@@ -318,7 +318,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
   if (!isLoggedIn) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center bg-slate-50 p-6 font-body">
-        <div className="bg-white p-8 md:p-10 rounded-[32px] shadow-2xl max-w-md w-full text-center border border-gray-100 animate-in zoom-in-95 duration-300">
+        <div className="bg-white p-8 md:p-10 rounded-4xl shadow-2xl max-w-md w-full text-center border border-gray-100 animate-in zoom-in-95 duration-300">
           <div className="w-20 h-20 bg-blue-50 text-brand-blue rounded-full flex items-center justify-center mx-auto mb-6">
             <Lock size={32} strokeWidth={2.5} />
           </div>
@@ -741,7 +741,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
 
           <div className={`flex items-center gap-1 transition-opacity ${isEditingThis ? 'hidden' : 'opacity-100 md:opacity-0 md:group-hover:opacity-100'}`}>
             {hasChildren && (
-              <div className="flex items-center gap-1 mr-2 border-r border-gray-100 pr-2 flex-shrink-0">
+              <div className="flex items-center gap-1 mr-2 border-r border-gray-100 pr-2 shrink-0">
                 <button onClick={() => handleExpandSpecificNode(node)} className="p-1 text-gray-400 hover:text-brand-blue bg-white rounded shadow-sm md:shadow-none md:bg-transparent" title="Expand Sub-topics"><Maximize2 size={14}/></button>
                 <button onClick={() => handleCollapseSpecificNode(node)} className="p-1 text-gray-400 hover:text-brand-blue bg-white rounded shadow-sm md:shadow-none md:bg-transparent" title="Collapse Sub-topics"><Minimize2 size={14}/></button>
               </div>
@@ -946,7 +946,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
               
               {activeView === 'path' && (
                 Object.keys(courseTrees).length === 0 ? (
-                  <div className="text-center py-20 border-2 border-dashed border-gray-200 rounded-[32px] bg-white">
+                  <div className="text-center py-20 border-2 border-dashed border-gray-200 rounded-4xl bg-white">
                     <BookOpen size={64} className="mx-auto text-gray-200 mb-4" />
                     <h2 className="text-xl font-bold text-gray-800">No Custom Syllabus Yet</h2>
                   </div>
@@ -1025,7 +1025,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
               )}
 
               {(isOwner || isGlobalMode || isTeacher) && (activeView === 'path' || activeView === 'global_builder') && (
-                <div className="border-2 border-dashed border-gray-200 rounded-[32px] p-10 text-center bg-white/50 hover:bg-white transition-all mt-12">
+                <div className="border-2 border-dashed border-gray-200 rounded-4xl p-10 text-center bg-white/50 hover:bg-white transition-all mt-12">
                   {isCreatingCourse ? (
                     <div className="max-w-sm mx-auto space-y-3 animate-in zoom-in-95 duration-200">
                       <input autoFocus value={newCourseName} onChange={e => setNewCourseName(e.target.value)} placeholder="Course Name (e.g., JEE Mains)" className="w-full border-2 border-gray-100 rounded-2xl px-5 py-3 outline-none focus:border-brand-blue font-bold" />
@@ -1063,7 +1063,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
 
       {/* PUSH TO STUDENT MODAL */}
       {showPushModal.isOpen && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-1000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl w-full max-w-md overflow-visible shadow-2xl animate-in zoom-in-95 duration-200 p-6 text-center">
             <div className="w-16 h-16 bg-blue-50 text-brand-blue rounded-full flex items-center justify-center mx-auto mb-4"><Send size={24}/></div>
             <h3 className="text-xl font-black text-slate-800 mb-2">Push Syllabus</h3>
@@ -1127,7 +1127,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
               )}
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-6 min-h-[36px] justify-center bg-slate-50 p-3 rounded-2xl border border-dashed border-gray-200">
+            <div className="flex flex-wrap gap-2 mb-6 min-h-9 justify-center bg-slate-50 p-3 rounded-2xl border border-dashed border-gray-200">
               {selectedPushTargets.length === 0 && (
                 <span className="text-xs text-slate-400 italic mt-1 font-medium">Select students from above</span>
               )}
@@ -1154,7 +1154,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
 
             <div className="flex gap-2">
               <button onClick={() => { setShowPushModal({ isOpen: false, courseName: "" }); setSelectedPushTargets([]); setPushSearchQuery(""); }} className="flex-1 py-3.5 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200 transition">Cancel</button>
-              <button onClick={handlePushToStudent} disabled={isProcessing || selectedPushTargets.length === 0} className="flex-[2] py-3.5 bg-brand-blue text-white rounded-xl font-black shadow-lg shadow-blue-500/20 disabled:opacity-50 flex justify-center items-center transition-all active:scale-95">
+              <button onClick={handlePushToStudent} disabled={isProcessing || selectedPushTargets.length === 0} className="flex-2 py-3.5 bg-brand-blue text-white rounded-xl font-black shadow-lg shadow-blue-500/20 disabled:opacity-50 flex justify-center items-center transition-all active:scale-95">
                 {isProcessing ? <Loader2 size={18} className="animate-spin" /> : `Push to ${selectedPushTargets.length} Student${selectedPushTargets.length !== 1 ? 's' : ''}`}
               </button>
             </div>
@@ -1171,13 +1171,13 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
 
       {/* TOAST */}
       {toast.show && (
-        <div className={`fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-5 flex items-center gap-2 px-6 py-3.5 rounded-full shadow-2xl font-bold text-sm ${toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-rose-600 text-white'}`}>
+        <div className={`fixed bottom-10 left-1/2 -translate-x-1/2 z-100 animate-in slide-in-from-bottom-5 flex items-center gap-2 px-6 py-3.5 rounded-full shadow-2xl font-bold text-sm ${toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-rose-600 text-white'}`}>
           {toast.type === 'success' ? <Check size={18} /> : <X size={18} />} {toast.message}
         </div>
       )}
  {/* 🚨 CSV IMPORT MODAL */}
       {showCSVModal && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-1000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
             
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-slate-50">
@@ -1250,7 +1250,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
                       )}
 
                       {/* Cool animated background gradient for the AI scanner */}
-                      {isScanningAI && <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent w-[200%] animate-[shimmer_2s_infinite] -z-10"></div>}
+                      {isScanningAI && <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/50 to-transparent w-[200%] animate-[shimmer_2s_infinite] -z-10"></div>}
                     </div>
 
                   </div>
@@ -1266,7 +1266,7 @@ const SyllabusExplorer = ({ userData }: { userData: any }) => {
                   </div>
                   
                   {/* Multi-Subject Preview Box */}
-                  <div className="border border-gray-200 rounded-xl p-4 bg-slate-50 h-[400px] overflow-y-auto text-sm font-medium text-gray-600 custom-scrollbar space-y-6">
+                  <div className="border border-gray-200 rounded-xl p-4 bg-slate-50 h-100 overflow-y-auto text-sm font-medium text-gray-600 custom-scrollbar space-y-6">
                       {csvParsedData.map((subject, sIdx) => (
                         <div key={sIdx} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                             <div className="font-black text-brand-blue text-lg mb-3 border-b pb-2 uppercase tracking-wide">

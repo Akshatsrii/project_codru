@@ -157,7 +157,7 @@ const Profile = () => {
     <div className="animate-fade-in-up bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
       
       {/* 🚨 UPDATED: Header with Orange branding and Logo */}
-      <div className="bg-brand-blue text-white p-6 md:p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-center min-h-[140px]">
+      <div className="bg-brand-blue text-white p-6 md:p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-center min-h-35">
   
         {/* LOGO */}
         {/* On mobile: relative (stacks normally). Decreased bottom margin to 'mb-2'. On desktop: absolute on the left! */}
@@ -368,7 +368,7 @@ const Profile = () => {
         </Alert>
       </Snackbar>
     </div>
-    <div className="h-4 md:h-6 w-full flex-shrink-0 pointer-events-none"></div>
+    <div className="h-4 md:h-6 w-full shrink-0 pointer-events-none"></div>
     </>
   );
 };

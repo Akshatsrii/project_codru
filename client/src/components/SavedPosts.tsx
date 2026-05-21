@@ -57,7 +57,7 @@ const SavedPosts = () => {
                   </div>
                 </div>
               ) : (
-                <div className="flex-1 p-5 flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-gray-100 text-center relative group-hover:bg-gray-100 transition-colors">
+                <div className="flex-1 p-5 flex flex-col items-center justify-center bg-linear-to-br from-slate-50 to-gray-100 text-center relative group-hover:bg-gray-100 transition-colors">
                   <div className="absolute top-3 text-xs font-bold text-brand-blue">@{post.userId?.username}</div>
                   <p className="text-gray-700 font-medium line-clamp-4 mt-4">{post.content}</p>
                 </div>

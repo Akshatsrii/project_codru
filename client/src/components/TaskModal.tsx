@@ -46,7 +46,7 @@ const TaskModal = ({ show, onClose, taskId, question, answer, link, position }: 
   return (
     // 1. Frosted Glass Overlay
     <div 
-      className="fixed inset-0 z-[1000] bg-slate-900/40 backdrop-blur-sm transition-all duration-300"
+      className="fixed inset-0 z-1000 bg-slate-900/40 backdrop-blur-sm transition-all duration-300"
       onClick={onClose}
     >
       {/* 2. The Modal Card */}

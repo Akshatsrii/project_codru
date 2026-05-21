@@ -171,12 +171,12 @@ const Overview = ({ user, data }: { user: any, data?: any }) => {
               onDrop={(e) => handleDrop(e, index)}
               className={`
                 ${getWidthClass(item.w)} ${getHeightClass(item.h)} 
-                bg-white rounded-[32px] shadow-sm border transition-all duration-300 relative flex flex-col overflow-hidden
+                bg-white rounded-4xl shadow-sm border transition-all duration-300 relative flex flex-col overflow-hidden
                 ${isEditMode ? 'ring-2 ring-brand-blue border-transparent cursor-move' : 'border-slate-100 hover:shadow-xl'}
               `}
             >
               {isEditMode && (
-                <div className="absolute top-3 right-3 z-[60] flex gap-1">
+                <div className="absolute top-3 right-3 z-60 flex gap-1">
                   <button onClick={() => updateWidget(item.id, 'w')} className="p-2 bg-slate-900 text-white rounded-xl hover:bg-brand-blue transition-colors">
                     <Layout size={14} />
                   </button>
@@ -197,7 +197,7 @@ const Overview = ({ user, data }: { user: any, data?: any }) => {
       </div>
 
       {isSavingLayout && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl z-[200]">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-2xl z-200">
             <Loader2 size={16} className="animate-spin text-brand-blue" />
             <span className="text-xs font-bold tracking-widest uppercase">Saving Workspace...</span>
         </div>

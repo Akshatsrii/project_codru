@@ -220,7 +220,7 @@ const SyllabusWidget: React.FC<SyllabusWidgetProps> = ({ data, user }) => {
       {/* CONTENT AREA */}
       <div className="flex-1 flex flex-col justify-center relative z-10 overflow-y-auto custom-scrollbar">
         {isLoading || isCalculating ? (
-            <div className="flex items-center justify-center h-full min-h-[120px]">
+            <div className="flex items-center justify-center h-full min-h-30">
                 <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
             </div>
         ) : isTeacher && !activeSearch ? (
@@ -277,7 +277,7 @@ const SyllabusWidget: React.FC<SyllabusWidgetProps> = ({ data, user }) => {
             <div className="flex flex-col items-center justify-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 py-6 px-4 h-full">
                 <Target size={28} className="opacity-20 mb-2" />
                 <h4 className="text-xs font-bold text-slate-700 mb-1">No Progress Yet</h4>
-                <p className="text-[9px] text-slate-500 text-center leading-relaxed max-w-[150px]">
+                <p className="text-[9px] text-slate-500 text-center leading-relaxed max-w-37.5">
                     {isTeacher 
                       ? "This student hasn't marked any topics as complete."
                       : "Mark topics as complete in the tracker to see your mastery here."

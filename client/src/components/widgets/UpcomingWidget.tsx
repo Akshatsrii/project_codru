@@ -258,7 +258,7 @@ const UpcomingWidget = ({ data }: { data: any }) => {
                         }}
                         className="flex gap-3 p-3 bg-brand-orange/5 hover:bg-brand-orange/10 border border-brand-orange/10 rounded-2xl transition-all cursor-pointer group/ev"
                     >
-                        <div className="flex flex-col items-center justify-center min-w-[55px] py-1.5 px-1 bg-white rounded-xl border border-brand-orange/20 shadow-sm">
+                        <div className="flex flex-col items-center justify-center min-w-13.75 py-1.5 px-1 bg-white rounded-xl border border-brand-orange/20 shadow-sm">
                             <span className="text-[10px] font-black text-brand-orange uppercase tracking-wider">
                                 {isToday(ev.date) ? 'Today' : isTomorrow(ev.date) ? 'Tmrw' : new Date(ev.date).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                             </span>
@@ -288,9 +288,9 @@ const UpcomingWidget = ({ data }: { data: any }) => {
 
       {/* 🚨 DESCRIPTION MODAL WITH MEET BUTTON & UNLOCKABLE ATTACHMENTS */}
       {expandedEvent && (
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onMouseDown={() => setExpandedEvent(null)}>
+          <div className="fixed inset-0 z-10000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onMouseDown={() => setExpandedEvent(null)}>
               <div 
-                  className="bg-white rounded-[24px] md:rounded-[32px] w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
+                  className="bg-white rounded-3xl md:rounded-4xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
                   onMouseDown={e => e.stopPropagation()}
               >
                   <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-brand-orange text-white">
@@ -318,7 +318,7 @@ const UpcomingWidget = ({ data }: { data: any }) => {
                           {expandedEvent.location && (
                               <div className="flex flex-col border-l border-slate-200 pl-6">
                                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Location</span>
-                                  <span className="text-sm font-bold text-slate-700 truncate max-w-[120px]">{expandedEvent.location}</span>
+                                  <span className="text-sm font-bold text-slate-700 truncate max-w-30">{expandedEvent.location}</span>
                               </div>
                           )}
                       </div>
@@ -337,7 +337,7 @@ const UpcomingWidget = ({ data }: { data: any }) => {
                       )}
 
                       <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Event Details</h4>
-                      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm min-h-[80px] mb-6">
+                      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm min-h-20 mb-6">
                         <p className="text-xs md:text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
                             {expandedEvent.description || "No additional notes provided for this event."}
                         </p>

@@ -191,7 +191,7 @@ const TasksWidget = ({ data }: { data: any }) => {
             
             <div className="flex flex-wrap gap-2 mb-3">
                 {/* 🚨 THE INSTA-LIKE SEARCH DROPDOWN */}
-                <div className="relative flex-1 min-w-[120px]">
+                <div className="relative flex-1 min-w-30">
                     <div className="relative">
                         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
                         <input 
@@ -205,7 +205,7 @@ const TasksWidget = ({ data }: { data: any }) => {
                         />
                     </div>
                     {showTaskTeamDropdown && taskTeamSearch.trim() !== "" && (
-                        <div className="absolute z-[100] w-full mt-1 bg-white border border-gray-100 rounded-xl shadow-xl max-h-40 overflow-y-auto custom-scrollbar p-1">
+                        <div className="absolute z-100 w-full mt-1 bg-white border border-gray-100 rounded-xl shadow-xl max-h-40 overflow-y-auto custom-scrollbar p-1">
                             {teamMembers.filter(m => 
                                 !selectedAssignees.some(u => u.username === m.username) && 
                                 (m.name.toLowerCase().includes(taskTeamSearch.toLowerCase()) || 
@@ -323,8 +323,8 @@ const TasksWidget = ({ data }: { data: any }) => {
 
       {/* DESCRIPTION MODAL / POPUP */}
       {expandedTask && (
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={() => setExpandedTask(null)}>
-              <div className="bg-white rounded-[24px] md:rounded-[32px] w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden border border-white/20" onClick={e => e.stopPropagation()}>
+          <div className="fixed inset-0 z-10000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={() => setExpandedTask(null)}>
+              <div className="bg-white rounded-3xl md:rounded-4xl w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden border border-white/20" onClick={e => e.stopPropagation()}>
                   <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-brand-blue text-white shrink-0">
                       <h3 className="text-sm font-bold pr-4 leading-tight">{expandedTask.title}</h3>
                       <button onClick={() => setExpandedTask(null)} className="hover:bg-white/20 p-1.5 rounded-full transition shrink-0"><X size={16}/></button>

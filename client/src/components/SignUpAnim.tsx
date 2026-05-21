@@ -1,7 +1,7 @@
-import LottiePackage from 'lottie-react';
+import Lottie from 'lottie-react';
 import signUpAnimData from '../assets/jsonFiles/signUpAnim.json';
 
-const Lottie = LottiePackage.default || LottiePackage;
+//const Lottie = LottiePackage.default || LottiePackage;
 
 const SignUpAnim = () => {
   return (

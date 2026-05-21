@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   DataGrid,
-  GridToolbarContainer,
-  GridToolbarQuickFilter,
+  Toolbar,
+  useGridApiContext, 
   GridColDef,
 } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
@@ -17,12 +17,11 @@ import {
   Cancel as CancelIcon,
   WorkspacePremium as WorkspacePremiumIcon
 } from "@mui/icons-material";
-import { Dialog, DialogContent, IconButton, TextField, Button, Tooltip, Switch, FormControlLabel } from "@mui/material";
+import { Dialog, DialogContent, IconButton, TextField, Button, Tooltip, Switch, FormControlLabel, InputAdornment } from "@mui/material";
 
-// 🚨 The missing color utilities
 import { useTheme, alpha, lighten, darken } from "@mui/material/styles";
 
-import { Loader2, Send, X, Megaphone, Link as LinkIcon } from "lucide-react";
+import { Loader2, Send, X, Megaphone, Link as LinkIcon, Search } from "lucide-react";
 
 // Components
 import Muialert from "./Muialert";
@@ -62,7 +61,11 @@ const BroadcastModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     <Dialog 
       open={isOpen} 
       onClose={onClose}
-      PaperProps={{ style: { borderRadius: '24px', padding: '10px', maxWidth: '500px', width: '100%' } }}
+      slotProps={{ 
+        paper: { 
+          style: { borderRadius: '24px', padding: '10px', maxWidth: '500px', width: '100%' } 
+        } 
+      }}
     >
       <div className="p-4">
         <div className="flex justify-between items-center mb-6">
@@ -78,7 +81,19 @@ const BroadcastModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
         <div className="flex flex-col gap-4">
           <TextField label="Notification Title" placeholder="e.g., Site Maintenance" fullWidth value={data.title} onChange={(e) => setData({ ...data, title: e.target.value })} sx={{ '& .MuiOutlinedInput-root': { borderRadius: '14px' } }} />
           <TextField label="Your Message" placeholder="Tell your users what's happening..." multiline rows={3} fullWidth value={data.message} onChange={(e) => setData({ ...data, message: e.target.value })} sx={{ '& .MuiOutlinedInput-root': { borderRadius: '14px' } }} />
-          <TextField label="Redirect Link (Optional)" placeholder="/dashboard or https://..." fullWidth value={data.link} onChange={(e) => setData({ ...data, link: e.target.value })} InputProps={{ startAdornment: <LinkIcon size={18} className="mr-2 text-gray-400" /> }} sx={{ '& .MuiOutlinedInput-root': { borderRadius: '14px' } }} />
+          <TextField 
+            label="Redirect Link (Optional)" 
+            placeholder="/dashboard or https://..." 
+            fullWidth 
+            value={data.link} 
+            onChange={(e) => setData({ ...data, link: e.target.value })} 
+            slotProps={{ 
+              input: { 
+                startAdornment: <LinkIcon size={18} className="mr-2 text-gray-400" /> 
+              } 
+            }} 
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: '14px' } }} 
+          />
 
           <div className="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-200 mt-2">
             <p className="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Live Preview</p>
@@ -100,6 +115,43 @@ const BroadcastModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
   );
 };
 
+// 🚨 NEW: Custom Search Component to replace GridToolbarQuickFilter
+function AdminGridSearch() {
+  const apiRef = useGridApiContext();
+
+  return (
+    <TextField
+      placeholder="Search directory..."
+      size="small"
+      variant="outlined"
+      onChange={(event) => {
+        const searchWords = event.target.value.split(' ').filter((word) => word !== '');
+        apiRef.current.setQuickFilterValues(searchWords);
+      }}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search size={16} className="text-gray-400" />
+            </InputAdornment>
+          ),
+        },
+      }}
+      sx={{ 
+        width: "100%", 
+        maxWidth: "300px",
+        '& .MuiOutlinedInput-root': { 
+          borderRadius: '14px', 
+          bgcolor: 'white', 
+          marginRight: '8px',
+          '& fieldset': { borderColor: '#e2e8f0' }
+        } 
+      }}
+    />
+  );
+}
+
+// 🚨 FIX: Added empty props signature so TypeScript knows it accepts nothing
 function Admin() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +174,7 @@ function Admin() {
 
   const navigate = useNavigate();
 
-  // 🚨 THE V9 FIX: Polyfill directly on your real theme to prevent Context crashes!
+  // THE V9 FIX: Polyfill directly on your real theme to prevent Context crashes!
   const theme = useTheme();
   if (theme && !(theme as any).alpha) {
     (theme as any).alpha = alpha || ((c: any) => c);
@@ -487,7 +539,7 @@ function Admin() {
   // 🚨 THE V9 FIX: Passed props and wrapped in useCallback so the Search Bar doesn't lose focus!
   const CustomToolbar = useCallback((props: any) => {
     return (
-      <GridToolbarContainer {...props} className="flex items-center px-10 py-6 border-b border-gray-100 bg-gray-50/50 w-full">
+      <Toolbar {...props} className="flex items-center px-10 py-6 border-b border-gray-100 bg-gray-50/50 w-full">
       
       {/* 1. LEFT: Title */}
       <div className="flex-1">
@@ -532,24 +584,10 @@ function Admin() {
 
       {/* 3. RIGHT: Search */}
       <div className="flex-1 flex justify-end">
-        <GridToolbarQuickFilter 
-          placeholder="Search directory..." 
-          variant="outlined" 
-          size="small" 
-          sx={{ 
-            width: "100%", 
-            maxWidth: "300px",
-            '& .MuiOutlinedInput-root': { 
-              borderRadius: '14px', 
-              bgcolor: 'white', 
-              marginRight: '8px',
-              '& fieldset': { borderColor: '#e2e8f0' }
-            } 
-          }} 
-        />
+        <AdminGridSearch />
       </div>
 
-    </GridToolbarContainer>
+    </Toolbar>
     );
   }, [godMode]);
 
@@ -566,7 +604,7 @@ function Admin() {
 
       {/* Pending TEACHER Approvals */}
       {(pendingTeachers.length > 0 || loadingPending) && (
-        <div className="animate-fade-in-down bg-white shadow-xl border border-gray-100 rounded-[24px] p-6">
+        <div className="animate-fade-in-down bg-white shadow-xl border border-gray-100 rounded-3xl p-6">
           <h2 className="text-lg font-black text-brand-blue mb-4 flex items-center gap-2">
             <span className="bg-orange-100 text-brand-orange w-7 h-7 rounded-full flex items-center justify-center text-xs">{pendingTeachers.length}</span>
             Pending Staff Approvals
@@ -574,7 +612,7 @@ function Admin() {
           {loadingPending ? <div className="flex justify-center p-4"><Loader2 className="animate-spin text-brand-orange" /></div> : (
             <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
               {pendingTeachers.map((teacher) => (
-                <div key={teacher._id} className="min-w-[280px] flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                <div key={teacher._id} className="min-w-70 flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
                   <div className="flex items-center gap-3">
                     <img src={teacher.photo || "https://via.placeholder.com/40"} className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-orange-100" alt="avatar" />
                     <div className="overflow-hidden">
@@ -595,7 +633,7 @@ function Admin() {
 
       {/* Pending PARENT Approvals */}
       {(pendingParents.length > 0 || loadingPending) && (
-        <div className="animate-fade-in-down bg-white shadow-xl border border-gray-100 rounded-[24px] p-6">
+        <div className="animate-fade-in-down bg-white shadow-xl border border-gray-100 rounded-3xl p-6">
           <h2 className="text-lg font-black text-rose-500 mb-4 flex items-center gap-2">
             <span className="bg-rose-100 text-rose-600 w-7 h-7 rounded-full flex items-center justify-center text-xs">{pendingParents.length}</span>
             Pending Parent Verifications
@@ -603,7 +641,7 @@ function Admin() {
           {loadingPending ? <div className="flex justify-center p-4"><Loader2 className="animate-spin text-rose-500" /></div> : (
             <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
               {pendingParents.map((parent) => (
-                <div key={parent._id} className="min-w-[280px] flex items-center justify-between p-3 bg-rose-50/50 rounded-2xl border border-rose-100">
+                <div key={parent._id} className="min-w-70 flex items-center justify-between p-3 bg-rose-50/50 rounded-2xl border border-rose-100">
                   <div className="flex items-center gap-3">
                     <img src={parent.photo || "https://via.placeholder.com/40"} className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-rose-200" alt="avatar" />
                     <div className="overflow-hidden">
@@ -623,7 +661,7 @@ function Admin() {
       )}
 
       {/* Main Grid */}
-      <div className="animate-fade-in-up h-[80vh] w-full bg-white shadow-xl border border-gray-100 rounded-[24px] overflow-hidden flex flex-col">
+      <div className="animate-fade-in-up h-[80vh] w-full bg-white shadow-xl border border-gray-100 rounded-3xl overflow-hidden flex flex-col">
         <DataGrid
           rows={users}
           columns={columns}
@@ -665,7 +703,11 @@ function Admin() {
       </div>
 
       {/* OTP Dialog */}
-      <Dialog open={open} onClose={(e, reason) => { if (reason !== "backdropClick") setOpen(false); }} disableEscapeKeyDown PaperProps={{ style: { padding: "40px", borderRadius: "24px", textAlign: "center" } }}>
+      <Dialog 
+        open={open} 
+        onClose={(e, reason) => { if (reason !== "backdropClick") setOpen(false); }} 
+        slotProps={{ paper: { style: { padding: "40px", borderRadius: "24px", textAlign: "center" } } }}
+      >
         <DialogContent>
           <ShieldIcon sx={{ fontSize: 48, color: '#ef4444', mb: 2 }} />
           <h3 className="text-2xl font-display font-bold text-brand-blue mb-2">Security Verification</h3>

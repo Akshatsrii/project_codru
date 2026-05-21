@@ -18,7 +18,7 @@ const CommentItem = ({ comment, postId, currentUserId, onVote, onReply, onDelete
       <div className="flex gap-3">
         {/* Avatar */}
         <Link to={`/profile/${comment.user?.username}`}>
-        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border border-gray-100 bg-brand-orange text-white flex items-center justify-center text-[10px] font-bold shadow-sm">
+        <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-gray-100 bg-brand-orange text-white flex items-center justify-center text-[10px] font-bold shadow-sm">
           {comment.user?.photo ? (
             <img src={comment.user.photo} alt="" className="w-full h-full object-cover" />
           ) : (
