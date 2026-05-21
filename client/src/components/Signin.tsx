@@ -6,7 +6,7 @@ import { TextField, InputAdornment } from "@mui/material";
 // Components & Assets
 import SignInAnim from "./SignInAnim";
 import Muialert from "./Muialert";
-import GoogleIcon from "../assets/google.svg";
+import GoogleIcon from "../assets/google.svg?url";
 import { UserData } from "../App";
 
 interface SigninProps {
