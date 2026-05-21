@@ -41,7 +41,8 @@ export default function Navprofile({
       
       localStorage.removeItem("jwtoken"); 
       localStorage.removeItem("Username");
-      setUserData({});
+      localStorage.removeItem("Photo");
+
       closeNavProfile();
       navigate("/signin");
       window.location.reload(); 

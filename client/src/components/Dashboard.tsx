@@ -259,17 +259,29 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
   const SignOut = async () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API}signout`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
       });
+
       if (res.ok) {
         localStorage.removeItem("jwtoken"); 
+        localStorage.removeItem("Username");
+        localStorage.removeItem("Photo");
         navigate("/");
+        window.location.reload(); // 🚨 Flushes all leftover React state from memory
       } else {
         const data = await res.json();
-        setAlertSeverity("error"); setAlertMessage(data.error || "Failed to log out"); setShowAlert(true);
+        setAlertSeverity("error"); 
+        setAlertMessage(data.error || "Failed to log out"); 
+        setShowAlert(true);
       }
     } catch (error) {
-      localStorage.removeItem("jwtoken"); navigate("/");
+      // 🚨 Fallback if the server is down
+      localStorage.removeItem("jwtoken"); 
+      localStorage.removeItem("Username");
+      localStorage.removeItem("Photo");
+      navigate("/");
+      window.location.reload();
     }
   };
 
