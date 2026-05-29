@@ -188,9 +188,9 @@ const PostWidget = () => {
 
       {/* 🚨 FULL POST POPUP MODAL */}
       {isModalOpen && (
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 animate-in fade-in duration-200" onMouseDown={() => setIsModalOpen(false)}>
+          <div className="fixed inset-0 z-10000 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 animate-in fade-in duration-200" onMouseDown={() => setIsModalOpen(false)}>
               <div 
-                  className="bg-white rounded-[24px] md:rounded-[32px] w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
+                  className="bg-white rounded-3xl md:rounded-4xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
                   onMouseDown={e => e.stopPropagation()}
               >
                   {/* Modal Header */}
@@ -224,7 +224,7 @@ const PostWidget = () => {
                                 </p>
                                 {fullPost.imageUrl && (
                                     <div className="w-full rounded-2xl overflow-hidden border border-slate-100 shadow-sm bg-slate-50">
-                                        <img src={fullPost.imageUrl} className="w-full h-auto max-h-[400px] object-contain" />
+                                        <img src={fullPost.imageUrl} className="w-full h-auto max-h-100 object-contain" />
                                     </div>
                                 )}
                               </div>

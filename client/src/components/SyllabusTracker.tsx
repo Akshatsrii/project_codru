@@ -295,9 +295,9 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
       <div key={node._id} className="w-full flex flex-col">
         <div className="w-full py-2.5 pr-4 flex items-start hover:bg-gray-50 transition border-b border-gray-100 bg-white group">
           
-          <div style={{ width: `${depth * 1.5}rem` }} className="flex-shrink-0" />
+          <div style={{ width: `${depth * 1.5}rem` }} className="shrink-0" />
           
-          <div className="w-8 flex items-start justify-center flex-shrink-0">
+          <div className="w-8 flex items-start justify-center shrink-0">
             {hasChildren && (
               <button 
                 onClick={() => toggleNode(node._id)} 
@@ -311,7 +311,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
           <button 
             disabled={readOnly || (safeRole === 'teacher' && !isMyOwnSyllabus)} 
             onClick={() => handleUpdateNode(node._id, { status: isCompleted ? 'not_started' : 'completed' })} 
-            className="mt-1 flex-shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition disabled:cursor-default mr-3"
+            className="mt-1 shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition disabled:cursor-default mr-3"
           >
             {isCompleted ? <CheckCircle className="text-green-500" size={18} /> : <Circle className="text-gray-300" size={18} />}
           </button>
@@ -326,13 +326,13 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
               </span>
               
               {hasChildren && (
-                <span className="text-[10px] text-gray-500 font-bold bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded flex-shrink-0">
+                <span className="text-[10px] text-gray-500 font-bold bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded shrink-0">
                   {node.children!.filter(c => c.status.includes('completed')).length}/{node.children!.length}
                 </span>
               )}
               
               {node.isCustom && (
-                <span className="text-[9px] uppercase font-black text-brand-orange bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded flex-shrink-0">
+                <span className="text-[9px] uppercase font-black text-brand-orange bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded shrink-0">
                   Custom
                 </span>
               )}
@@ -341,7 +341,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
 
           {/* 🚨 RESTORED: Individual Expand/Collapse Buttons for child nodes */}
           {hasChildren && (
-            <div className="flex items-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity gap-1 mr-2 flex-shrink-0 mt-0.5">
+            <div className="flex items-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity gap-1 mr-2 shrink-0 mt-0.5">
               <button 
                 onClick={() => handleExpandSpecificNode(node)} 
                 className="p-1 text-gray-400 hover:text-brand-blue bg-white rounded shadow-sm md:shadow-none md:bg-transparent" 
@@ -362,7 +362,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
           <button 
             disabled={readOnly || (safeRole === 'teacher' && !isMyOwnSyllabus)} 
             onClick={() => handleUpdateNode(node._id, { hasDoubt: !node.hasDoubt })} 
-            className={`ml-2 p-1.5 rounded-lg flex-shrink-0 transition active:scale-95 ${node.hasDoubt ? 'bg-red-100 text-red-500 shadow-sm' : 'text-gray-300 hover:text-red-400 bg-gray-50 hover:bg-red-50'} disabled:cursor-default mt-0.5`}
+            className={`ml-2 p-1.5 rounded-lg shrink-0 transition active:scale-95 ${node.hasDoubt ? 'bg-red-100 text-red-500 shadow-sm' : 'text-gray-300 hover:text-red-400 bg-gray-50 hover:bg-red-50'} disabled:cursor-default mt-0.5`}
           >
             <AlertCircle size={16} />
           </button>
@@ -411,7 +411,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
   if (safeRole === 'teacher' && !selectedStudentUsername) {
     return (
       <div className="w-full h-full flex flex-col overflow-hidden">
-        <div className="flex justify-between items-center mb-4 md:mb-6 flex-shrink-0">
+        <div className="flex justify-between items-center mb-4 md:mb-6 shrink-0">
           <h3 className="font-display text-xl md:text-3xl font-black text-gray-900 flex items-center gap-2 md:gap-3">
             <Zap className="text-brand-orange animate-pulse w-6 h-6 md:w-8 md:h-8" /> Class Insights
           </h3>
@@ -432,7 +432,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
                       {doubt.lastUpdated && <span className="text-[10px] text-red-400 italic flex items-center gap-1 whitespace-nowrap"><Clock size={10} /> {formatTimeAgo(doubt.lastUpdated)}</span>}
                     </div>
                   </div>
-                  <div className="flex items-center justify-center gap-2 bg-white px-3 py-2 rounded-lg border border-red-100 shadow-sm flex-shrink-0">
+                  <div className="flex items-center justify-center gap-2 bg-white px-3 py-2 rounded-lg border border-red-100 shadow-sm shrink-0">
                     <User size={16} className="text-red-500" />
                     <span className="font-black text-red-600 text-lg leading-none">{doubt.count}</span>
                   </div>
@@ -450,7 +450,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
       
       {/* TABS FOR COURSES */}
       {courses.length > 0 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-2 flex-shrink-0 custom-scrollbar">
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-2 shrink-0 custom-scrollbar">
           {courses.map((course) => (
             <button key={course} onClick={() => setActiveCourse(course)} className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all border shadow-sm flex items-center gap-2 ${activeCourse === course ? 'bg-brand-blue border-brand-blue text-white ring-4 ring-blue-50' : 'bg-white border-gray-200 text-gray-600 hover:border-brand-blue/50'}`}>
               <BookOpen size={14} />{course}
@@ -463,11 +463,11 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
       )}
 
       {activeCourse && (
-        <div className="mb-4 md:mb-8 flex-shrink-0 relative animate-in fade-in slide-in-from-top-4">
+        <div className="mb-4 md:mb-8 shrink-0 relative animate-in fade-in slide-in-from-top-4">
           <div className="flex flex-row items-center justify-between gap-2 md:gap-4">
             <div className="flex-1 min-w-0">
               <h3 className="font-display text-xl md:text-3xl font-black text-gray-900 flex items-center gap-1.5 md:gap-3 mb-1 md:mb-2 truncate">
-                <TrendingUp className="text-brand-blue flex-shrink-0 w-6 h-6 md:w-8 md:h-8" />
+                <TrendingUp className="text-brand-blue shrink-0 w-6 h-6 md:w-8 md:h-8" />
                 <span className="truncate">{headerTitle}</span>
               </h3>
               <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium text-gray-500">
@@ -475,7 +475,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
                 {overallStats.lastActivity && <span className="hidden sm:flex bg-slate-50 px-2 py-1 rounded border border-gray-200 items-center gap-1"><Clock size={12}/> {formatTimeAgo(overallStats.lastActivity)}</span>}
               </div>
             </div>
-            <div className="text-right flex-shrink-0"><span className="text-3xl md:text-5xl font-black text-brand-blue tabular-nums leading-none">{overallStats.percentage}%</span></div>
+            <div className="text-right shrink-0"><span className="text-3xl md:text-5xl font-black text-brand-blue tabular-nums leading-none">{overallStats.percentage}%</span></div>
           </div>
           <ProgressBar percent={overallStats.percentage} colorClass={overallStats.percentage === 100 ? "bg-green-500" : "bg-brand-blue"} />
         </div>
@@ -483,7 +483,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
 
       {/* CONTROLS */}
       {activeCourse && (
-        <div className="flex flex-row items-center justify-between gap-2 mb-4 md:mb-6 flex-shrink-0 animate-in fade-in">
+        <div className="flex flex-row items-center justify-between gap-2 mb-4 md:mb-6 shrink-0 animate-in fade-in">
           <div className="relative flex-1 w-full max-w-md hidden md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
             <input type="text" placeholder="Search topics..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:border-brand-blue transition" />
@@ -539,20 +539,20 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ role, readOnly
                     <div className="flex items-center justify-between mb-3">
                       
                       <div className="flex items-center gap-1 flex-1 min-w-0">
-                          <div className="w-8 flex items-center justify-center flex-shrink-0">
+                          <div className="w-8 flex items-center justify-center shrink-0">
                             <button onClick={() => toggleNode(subjectNode._id)} className="p-1 text-gray-400 hover:text-brand-blue rounded-md active:bg-gray-100">{isExpanded ? <ChevronDown size={22} /> : <ChevronRight size={22} />}</button>
                           </div>
-                          <button disabled={readOnly || (safeRole === 'teacher' && !isMyOwnSyllabus)} onClick={() => handleUpdateNode(subjectNode._id, { status: isSubjectCompleted ? 'not_started' : 'completed' })} className="flex-shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition disabled:cursor-default mx-2">{isSubjectCompleted ? <CheckCircle className="text-green-500" size={24} /> : <Circle className="text-gray-300" size={24} />}</button>
+                          <button disabled={readOnly || (safeRole === 'teacher' && !isMyOwnSyllabus)} onClick={() => handleUpdateNode(subjectNode._id, { status: isSubjectCompleted ? 'not_started' : 'completed' })} className="shrink-0 cursor-pointer hover:scale-110 active:scale-95 transition disabled:cursor-default mx-2">{isSubjectCompleted ? <CheckCircle className="text-green-500" size={24} /> : <Circle className="text-gray-300" size={24} />}</button>
                           <div className="flex items-center flex-wrap min-w-0 gap-2">
                             <span onClick={() => toggleNode(subjectNode._id)} className={`font-bold text-base md:text-lg cursor-pointer hover:text-brand-blue transition min-w-0 truncate ${isSubjectCompleted ? 'text-gray-400 line-through' : 'text-gray-800'}`}>{subjectNode.title}</span>
-                            {subjectNode.isCustom && <span className="text-[10px] uppercase font-black text-brand-orange bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded flex-shrink-0">Custom</span>}
+                            {subjectNode.isCustom && <span className="text-[10px] uppercase font-black text-brand-orange bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded shrink-0">Custom</span>}
                           </div>
                       </div>
 
-                      <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-2 shrink-0">
                           {/* 🚨 RESTORED: Individual Expand/Collapse Buttons for subject nodes */}
                           {subjectNode.children && subjectNode.children.length > 0 && (
-                            <div className="flex items-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity gap-1 mr-1 flex-shrink-0">
+                            <div className="flex items-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity gap-1 mr-1 shrink-0">
                               <button onClick={() => handleExpandSpecificNode(subjectNode)} className="p-1.5 text-gray-400 hover:text-brand-blue bg-white rounded shadow-sm md:shadow-none md:bg-transparent" title="Expand Sub-topics"><Maximize2 size={16}/></button>
                               <button onClick={() => handleCollapseSpecificNode(subjectNode)} className="p-1.5 text-gray-400 hover:text-brand-blue bg-white rounded shadow-sm md:shadow-none md:bg-transparent" title="Collapse Sub-topics"><Minimize2 size={16}/></button>
                             </div>

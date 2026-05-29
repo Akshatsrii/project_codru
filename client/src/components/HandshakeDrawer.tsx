@@ -93,7 +93,7 @@ const HandshakeDrawer = () => {
       {/* 1. THE SURPRISE PULL-TAB (Fixed to the right edge) */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-32 right-0 z-[100] flex items-center gap-2 bg-gradient-to-l from-brand-blue to-blue-600 text-white pl-4 pr-3 py-3 rounded-l-2xl shadow-[-8px_0_20px_rgba(23,101,164,0.3)] hover:pr-5 hover:bg-blue-700 transition-all duration-300 group ${isOpen ? 'translate-x-full' : 'translate-x-0'}`}
+        className={`fixed bottom-32 right-0 z-100 flex items-center gap-2 bg-linear-to-l from-brand-blue to-blue-600 text-white pl-4 pr-3 py-3 rounded-l-2xl shadow-[-8px_0_20px_rgba(23,101,164,0.3)] hover:pr-5 hover:bg-blue-700 transition-all duration-300 group ${isOpen ? 'translate-x-full' : 'translate-x-0'}`}
       >
         <div className="relative">
           <Sparkles size={20} className="animate-pulse" />
@@ -107,14 +107,14 @@ const HandshakeDrawer = () => {
       {/* 2. THE OVERLAY BACKDROP */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[101] transition-opacity"
+          className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-101 transition-opacity"
           onClick={() => setIsOpen(false)} 
         />
       )}
 
       {/* 3. THE SLIDE-OUT DRAWER */}
       <div 
-        className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[102] border-l border-slate-100 flex flex-col transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-102 border-l border-slate-100 flex flex-col transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
       >
         {/* Drawer Header */}
         <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
@@ -140,7 +140,7 @@ const HandshakeDrawer = () => {
           {requests.map((req) => (
             <div key={req._id} className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm relative overflow-hidden">
               {/* Decorative accent line */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-orange to-brand-blue" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-brand-orange to-brand-blue" />
               
               <div className="flex items-center gap-3 mb-4">
                 <img src={req.sender?.photo || "https://via.placeholder.com/150"} className="w-12 h-12 rounded-full object-cover shadow-sm border border-slate-100" />

@@ -259,17 +259,29 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
   const SignOut = async () => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API}signout`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
       });
+
       if (res.ok) {
         localStorage.removeItem("jwtoken"); 
+        localStorage.removeItem("Username");
+        localStorage.removeItem("Photo");
         navigate("/");
+        window.location.reload(); // 🚨 Flushes all leftover React state from memory
       } else {
         const data = await res.json();
-        setAlertSeverity("error"); setAlertMessage(data.error || "Failed to log out"); setShowAlert(true);
+        setAlertSeverity("error"); 
+        setAlertMessage(data.error || "Failed to log out"); 
+        setShowAlert(true);
       }
     } catch (error) {
-      localStorage.removeItem("jwtoken"); navigate("/");
+      // 🚨 Fallback if the server is down
+      localStorage.removeItem("jwtoken"); 
+      localStorage.removeItem("Username");
+      localStorage.removeItem("Photo");
+      navigate("/");
+      window.location.reload();
     }
   };
 
@@ -386,7 +398,14 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
                   {item.isLocked && <Lock size={16} strokeWidth={2.5} className="opacity-90" />}
                 </div>
               } 
-              primaryTypographyProps={{ fontWeight: isActive || item.isLocked ? 700 : 500, fontFamily: '"Arimo", sans-serif' }} 
+              slotProps={{ 
+                primary: { 
+                  sx: {
+                    fontWeight: isActive || item.isLocked ? 700 : 500, 
+                    fontFamily: '"Arimo", sans-serif' 
+                  }
+                } 
+              }}
             />
           </ListItemButton>
         </ListItem>
@@ -425,7 +444,7 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
         
         {/* Unverified Teacher Banner */}
         {isUnverifiedTeacher && (
-          <div className="mt-6 mx-4 bg-gradient-to-br from-brand-blue to-blue-600 rounded-2xl p-5 text-white text-center shadow-lg">
+          <div className="mt-6 mx-4 bg-linear-to-br from-brand-blue to-blue-600 rounded-2xl p-5 text-white text-center shadow-lg">
             <Lock className="mx-auto mb-2 opacity-80" size={24} />
             <p className="text-xs font-medium mb-3">Official educator tools</p>
             <button 
@@ -441,7 +460,14 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
         <ListItem disablePadding className="mt-auto pt-8 mb-4 px-2 hidden md:block">
           <ListItemButton onClick={SignOut} sx={{ borderRadius: "12px", color: "#e11d48", "&:hover": { backgroundColor: "#fff1f2" } }}>
             <ListItemIcon sx={{ color: "inherit", minWidth: "40px" }}><LogOut size={22} /></ListItemIcon>
-            <ListItemText primary="Sign Out" primaryTypographyProps={{ fontWeight: 700 }} />
+            <ListItemText 
+              primary="Sign Out" 
+              slotProps={{ 
+                primary: { 
+                  sx: { fontWeight: 700 } 
+                } 
+              }} 
+            />
           </ListItemButton>
         </ListItem>
         
@@ -450,15 +476,15 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
   };
 
   return (
-    <div className="fixed inset-0 flex h-[100dvh] w-full bg-slate-50 overflow-hidden font-body overscroll-none">
+    <div className="fixed inset-0 flex h-dvh w-full bg-slate-50 overflow-hidden font-body overscroll-none">
       
       {/* =========================================
           DESKTOP LEFT SIDEBAR (Hidden on Mobile) 
       ========================================= */}
-      <div className="hidden md:flex relative w-72 bg-white border-r border-gray-100 flex-col shadow-lg flex-shrink-0 z-[110]">
+      <div className="hidden md:flex relative w-72 bg-white border-r border-gray-100 flex-col shadow-lg shrink-0 z-110">
         <div className="h-20 flex items-center justify-center border-b border-gray-100">
           <NavLink to="/" className="cursor-pointer">
-            <img src="/logo.svg" alt="CuTe Learning" className="w-[6.5rem] drop-shadow-md transition transform hover:scale-105" draggable="false" />
+            <img src="/logo.svg" alt="CuTe Learning" className="w-26 drop-shadow-md transition transform hover:scale-105" draggable="false" />
           </NavLink>
         </div>
 
@@ -553,7 +579,7 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
         </div>
 
         {/* TOP BAR (Hamburger + Mobile Date) */}
-        <div className="absolute top-4 md:top-6 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-[90] flex items-center justify-between md:justify-center">
+        <div className="absolute top-4 md:top-6 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-90 flex items-center justify-between md:justify-center">
           
           {/* 🚨 NEW: Mobile Top-Left Hamburger Menu */}
           <button 
@@ -586,7 +612,7 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
           </div>
         </div>
         
-        <div className="absolute top-0 left-0 w-full flex justify-center z-[1000] pointer-events-none">
+        <div className="absolute top-0 left-0 w-full flex justify-center z-1000 pointer-events-none">
           <div className="pointer-events-auto">
             <Notification 
               showNotifications={showNotifications} 
@@ -602,7 +628,7 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
         <div className="relative z-0 px-0 pt-16 pb-0 md:p-8 max-w-7xl mx-auto w-full mt-2 md:mt-8 flex-1 flex flex-col min-h-0">
           
           {isPremiumTeacher && ["syllabus", "my-courses"].includes(currentView) && (
-            <div className="mb-6 mx-4 md:mx-0 bg-white px-6 py-4 rounded-[24px] shadow-sm border border-gray-100 flex items-center gap-4 overflow-x-auto custom-scrollbar flex-shrink-0">
+            <div className="mb-6 mx-4 md:mx-0 bg-white px-6 py-4 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-4 overflow-x-auto custom-scrollbar shrink-0">
               <span className="text-sm font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Viewing:</span>
               
               <div className="flex items-center gap-2">
@@ -666,7 +692,7 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
         
 
           <div className={`relative flex-1 min-h-0 flex flex-col bg-white transition-all duration-300
-              rounded-t-[32px] md:rounded-[32px] 
+              rounded-t-4xl md:rounded-4xl 
               border-t md:border border-gray-100 border-x-0 md:border-x
               shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] md:shadow-xl
               ${(currentView === "report" || currentView === "whatsapp-crm") 
@@ -675,7 +701,7 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
           `}>
             <div className={`relative w-full ${(currentView === "report" || currentView === "whatsapp-crm") 
               ? "h-full" 
-              : "min-h-full pb-8 md:pb-10"} rounded-[8px]
+              : "min-h-full pb-8 md:pb-10"} rounded-lg
             `}>
               
               {/* COMPONENT RENDERING ROUTER */}
@@ -683,14 +709,14 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
               {currentView === "profile" && <Profile />}
               {currentView === "schedule" && <Calendar role={userData.Role || "student"} currentUserId={userData._id} />}
               {currentView === "settings" && <SettingsPanel userData={userData} setUserData={setUserData} />}
-              {currentView === "saved-posts" && <SavedPosts userData={userData} setUserData={setUserData} />}
-              {currentView === "my-posts" && <MyPosts userData={userData} setUserData={setUserData} />}
+              {currentView === "saved-posts" && <SavedPosts />}
+              {currentView === "my-posts" && <MyPosts />}
               
               {currentView === "syllabus" && !isParent && <SyllabusTracker role={userData.Role || "student"} selectedStudentUsername={selectedStudentUsername} />}
               {currentView === "my-courses" && !isParent && <MyCourses role={userData.Role} selectedStudentUsername={selectedStudentUsername || undefined} />}
               {currentView === "report" && userData?.Role?.toLowerCase() === "student" && <PlanetryPath />}
               {currentView === "management" && isPremiumTeacher && <StudentManagement userData={userData} />}
-              {currentView === "manage-users" && userData?.isAdmin && <Admin userData={userData} setUserData={setUserData} />}
+              {currentView === "manage-users" && userData?.isAdmin && <Admin />}
               {currentView === "admin-audit-log" && userData?.isAdmin && <AdminAuditLog />}
               {currentView === "whatsapp-crm" && userData?.isAdmin && <WhatsAppChat />}
               {currentView === "crm" && userData?.isAdmin && <CRM />}
@@ -737,7 +763,7 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
       {/* =========================================
           📱 DASHBOARD NAVBAR (Focus Context)
       ========================================= */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white flex items-center z-[1000] pb-safe 
+      <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white flex items-center z-1000 pb-safe 
         shadow-[0_-10px_20px_-5px_rgba(0,0,0,0.1)] border-t border-gray-100">
         
         {/* ESCAPE HATCH TO SOCIAL FEED */}
@@ -779,8 +805,8 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
           MODALS & ALERTS
       ========================================= */}
       {showUnlockModal && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-[32px] p-8 max-w-sm w-full text-center shadow-2xl relative animate-in zoom-in duration-200">
+        <div className="fixed inset-0 z-999 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-4xl p-8 max-w-sm w-full text-center shadow-2xl relative animate-in zoom-in duration-200">
             <button onClick={() => setShowUnlockModal(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 transition">✕</button>
             
             <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${isUnverifiedParent ? 'bg-rose-50' : 'bg-blue-50'}`}>
@@ -854,7 +880,7 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsSidebarOpen(false)}
-              className="md:hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000]" 
+              className="md:hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-2000" 
             />
 
             {/* Sidebar Drawer */}
@@ -863,11 +889,11 @@ const Dashboard = ({ userData, setUserData }: DashboardProps) => {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 250 }}
-              className="md:hidden fixed top-0 left-0 bottom-0 w-[80%] max-w-[300px] bg-white z-[2100] shadow-2xl flex flex-col"
+              className="md:hidden fixed top-0 left-0 bottom-0 w-[80%] max-w-75 bg-white z-2100 shadow-2xl flex flex-col"
             >
               {/* Header (Logo + Close Button) */}
               <div className="h-16 flex items-center justify-center border-b border-gray-100 relative shrink-0">
-                <img src="/logo.svg" alt="CuTe Learning" className="w-[5.5rem] drop-shadow-md" draggable="false" />
+                <img src="/logo.svg" alt="CuTe Learning" className="w-22 drop-shadow-md" draggable="false" />
               </div>
 
               {/* Profile Overview (Mimics Desktop exactly) */}

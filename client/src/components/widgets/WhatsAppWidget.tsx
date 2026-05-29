@@ -125,7 +125,7 @@ const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({ user }) => {
             {/* CONTACT LIST */}
             <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 relative z-10 flex flex-col gap-2 pb-2">
                 {isLoading ? (
-                    <div className="flex items-center justify-center h-full min-h-[150px]">
+                    <div className="flex items-center justify-center h-full min-h-37.5">
                         <Loader2 className="w-6 h-6 text-green-500 animate-spin" />
                     </div>
                 ) : filteredContacts.length > 0 ? (
@@ -164,7 +164,7 @@ const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({ user }) => {
                         </div>
                     ))
                 ) : (
-                    <div className="flex flex-col items-center justify-center text-slate-400 bg-slate-50 border border-dashed border-slate-200 rounded-xl h-full min-h-[150px]">
+                    <div className="flex flex-col items-center justify-center text-slate-400 bg-slate-50 border border-dashed border-slate-200 rounded-xl h-full min-h-37.5">
                         <MessageSquare size={24} className="opacity-20 mb-2" />
                         <h4 className="text-[10px] font-bold text-slate-700">No Conversations</h4>
                     </div>

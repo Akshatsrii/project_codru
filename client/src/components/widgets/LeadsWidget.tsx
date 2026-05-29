@@ -269,9 +269,9 @@ const LeadsWidget = ({ data }: { data: any }) => {
 
       {/* 🚨 DESCRIPTION MODAL / POPUP */}
       {expandedLead && (
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onMouseDown={() => setExpandedLead(null)}>
+          <div className="fixed inset-0 z-10000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onMouseDown={() => setExpandedLead(null)}>
               <div 
-                  className="bg-white rounded-[24px] md:rounded-[32px] w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
+                  className="bg-white rounded-3xl md:rounded-3xl w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 overflow-hidden"
                   onMouseDown={e => e.stopPropagation()} // Prevents clicking inside modal from closing it
               >
                   <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-brand-blue text-white">

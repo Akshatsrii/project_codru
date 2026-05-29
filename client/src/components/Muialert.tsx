@@ -27,7 +27,7 @@ const Muialert = ({
   return (
     // 2. Replaced inline styles with responsive Tailwind classes!
     // w-full max-w-md ensures it stretches on mobile but caps at a nice size on desktop
-    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[9999] w-full max-w-md px-4 drop-shadow-2xl animate-fade-in-up">
+    <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-9999 w-full max-w-md px-4 drop-shadow-2xl animate-fade-in-up">
       <MuiAlert
         onClose={onClose}
         severity={severity}

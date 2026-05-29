@@ -12,7 +12,7 @@ export interface WhatsAppMessage {
     messageBody: string;
     messageType: 'text' | 'template' | 'image' | 'document';
     direction: 'incoming' | 'outgoing';
-    status: 'received' | 'sent' | 'read';
+    status: 'received' | 'sent' | 'read' | 'failed';
     timestamp: string;
     deliveredAt?: string;
     readAt?: string;
@@ -617,7 +617,7 @@ const WhatsAppChat: React.FC = () => {
                 {/* LEFT SIDEBAR */}
                 <div className={`
                     ${selectedContactId ? 'hidden' : 'flex'} 
-                    w-full md:w-80 md:flex bg-slate-50 border-r border-gray-100 flex-col flex-shrink-0
+                    w-full md:w-80 md:flex bg-slate-50 border-r border-gray-100 flex-col shrink-0
                 `}>
                     <div className="p-4 border-b border-gray-100 bg-white">
                         <div className="flex items-center justify-between mb-3">
@@ -693,7 +693,7 @@ const WhatsAppChat: React.FC = () => {
                                             {formatLastSeen(contact.lastSeen || contact.updatedAt)}
                                         </div>
                                         {(contact.unreadCount || 0) > 0 && selectedContactId !== contact._id && (
-                                            <div className="bg-brand-orange text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center shadow-sm">
+                                            <div className="bg-brand-orange text-white text-[10px] font-bold min-w-4.5 h-4.5 px-1 rounded-full flex items-center justify-center shadow-sm">
                                                 {contact.unreadCount}
                                             </div>
                                         )}
@@ -1017,8 +1017,8 @@ const WhatsAppChat: React.FC = () => {
 
             {/* 🚨 NEW: PRE-FLIGHT VARIABLES MODAL */}
             {pendingTemplate && (
-                <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-[32px] p-6 w-full max-w-sm shadow-2xl animate-in zoom-in duration-200">
+                <div className="fixed inset-0 z-2000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2000 p-6 w-full max-w-sm shadow-2xl animate-in zoom-in duration-200">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-slate-800">Complete Template</h3>
                             <button onClick={() => setPendingTemplate(null)} className="text-slate-400 hover:bg-slate-100 p-2 rounded-full transition">
@@ -1078,8 +1078,8 @@ const WhatsAppChat: React.FC = () => {
 
             {/* ADD CONTACT MODAL */}
             {showNewContactModal && (
-                <div className="absolute inset-0 z-[2000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-[32px] p-6 w-full max-w-sm shadow-2xl animate-in zoom-in duration-200">
+                <div className="absolute inset-0 z-2000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-4xl p-6 w-full max-w-sm shadow-2xl animate-in zoom-in duration-200">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-slate-800">Start New Chat</h3>
                             <button onClick={() => setShowNewContactModal(false)} className="text-slate-400 hover:bg-slate-100 p-2 rounded-full transition">
@@ -1127,15 +1127,15 @@ const WhatsAppChat: React.FC = () => {
             {/* TEMPLATE MANAGER MODAL */}
             {showTemplateManager && (
                 /* 🚨 1. fixed on mobile (to beat nav), absolute on desktop (to center in CRM window) */
-                <div className="fixed md:absolute inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 md:pb-10 md:p-10">
+                <div className="fixed md:absolute inset-0 z-9999 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 md:pb-10 md:p-10">
                     
-                    <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-4xl max-h-[78dvh] h-full md:h-[85vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in duration-200">
+                    <div className="bg-white rounded-2xl md:rounded-4xl w-full max-w-4xl max-h-[78dvh] h-full md:h-[85vh] flex flex-col overflow-hidden shadow-2xl animate-in zoom-in duration-200">
                         
                         {/* 🚨 2. FLEX-WRAP HEADER: Perfect on desktop, automatically stacks Sync on mobile */}
                         <div className="p-4 md:px-8 md:py-6 border-b border-gray-100 flex flex-wrap items-center gap-y-4 gap-x-4 bg-white shrink-0">
                             
                             {/* Title Block */}
-                            <div className="flex-1 min-w-[200px] order-1">
+                            <div className="flex-1 min-w-50 order-1">
                                 <h2 className="text-xl md:text-2xl font-display font-bold text-slate-800">Template Manager</h2>
                                 <p className="text-xs md:text-sm text-slate-500 mt-1">Sync from Meta and configure Cloudinary URLs.</p>
                             </div>
@@ -1294,10 +1294,10 @@ const WhatsAppChat: React.FC = () => {
             )}
             {/* 🗓️ ADVANCED TASK & CALENDAR MODAL */}
             {showTaskModal && (
-                <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-10000 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
                     
                     {/* 🚨 CHANGED: max-w-md becomes md:max-w-3xl for landscape desktop view */}
-                    <div className="bg-white rounded-2xl md:rounded-[32px] w-full max-w-md md:max-w-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-200">
+                    <div className="bg-white rounded-2xl md:rounded-4xl w-full max-w-md md:max-w-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-200">
                         
                         {/* Header */}
                         <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-brand-blue text-white">
@@ -1334,7 +1334,7 @@ const WhatsAppChat: React.FC = () => {
                                         <textarea 
                                             value={taskData.description}
                                             onChange={(e) => setTaskData({...taskData, description: e.target.value})}
-                                            className="w-full mt-1 flex-1 min-h-[120px] md:min-h-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" 
+                                            className="w-full mt-1 flex-1 min-h-30 md:min-h-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-brand-blue resize-none text-sm text-slate-700" 
                                         />
                                     </div>
                                 </div>
@@ -1375,7 +1375,7 @@ const WhatsAppChat: React.FC = () => {
 
                                         {/* Floating Instagram-Style Dropdown */}
                                         {showTeamDropdown && teamSearch.trim() !== "" && (
-                                            <div className="absolute z-[100] w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-48 overflow-y-auto custom-scrollbar p-1 animate-in fade-in slide-in-from-top-2">
+                                            <div className="absolute z-100 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl max-h-48 overflow-y-auto custom-scrollbar p-1 animate-in fade-in slide-in-from-top-2">
                                                 {teamMembers.filter(m => 
                                                     !taskData.assignedStaff.includes(m.username) && 
                                                     (m.name.toLowerCase().includes(teamSearch.toLowerCase()) || 
@@ -1424,7 +1424,7 @@ const WhatsAppChat: React.FC = () => {
                                         )}
 
                                         {/* Selected Staff Tags (Premium Pill Design with Avatars) */}
-                                        <div className="flex flex-wrap gap-2 mt-3 min-h-[28px]">
+                                        <div className="flex flex-wrap gap-2 mt-3 min-h-7">
                                             {taskData.assignedStaff.length === 0 && (
                                                 <span className="text-xs text-slate-400 italic mt-1 ml-1">No one assigned yet</span>
                                             )}
@@ -1467,7 +1467,7 @@ const WhatsAppChat: React.FC = () => {
                                     </div>
 
                                     {/* Guests Toggle */}
-                                    <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition border border-slate-200 mt-2 h-[72px]">
+                                    <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl cursor-pointer hover:bg-slate-100 transition border border-slate-200 mt-2 h-18">
                                         <input 
                                             type="checkbox" 
                                             checked={taskData.addToCalendar}
@@ -1497,7 +1497,7 @@ const WhatsAppChat: React.FC = () => {
             )}
             {/* 🍞 FLOATING TOAST NOTIFICATION */}
             {toast.show && (
-                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[11000] animate-in fade-in slide-in-from-bottom-8 duration-300 pointer-events-none">
+                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-11000 animate-in fade-in slide-in-from-bottom-8 duration-300 pointer-events-none">
                     <div className={`flex items-center gap-2.5 px-5 py-3.5 rounded-full shadow-2xl border font-bold text-sm tracking-wide ${
                         toast.type === 'success' ? 'bg-green-50 text-green-700 border-green-200 shadow-green-900/10' : 
                         toast.type === 'error' ? 'bg-rose-50 text-rose-700 border-rose-200 shadow-rose-900/10' :

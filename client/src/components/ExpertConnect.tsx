@@ -167,7 +167,7 @@ const ExpertConnect = ({ userData }: ExpertConnectProps) => {
         
         {/* --- 1. THE SUPPORT CIRCLE (The Sacred 3) --- */}
         {userData?.Role === "Parent" && circle.length > 0 && (
-            <div className="bg-gradient-to-br from-rose-50/50 to-blue-50/30 p-6 rounded-3xl border border-white shadow-inner">
+            <div className="bg-linear-to-br from-rose-50/50 to-blue-50/30 p-6 rounded-3xl border border-white shadow-inner">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-black text-slate-800 flex items-center gap-2">
                 <Heart className="text-rose-500 w-5 h-5 fill-rose-500" /> My Support Circle
@@ -286,8 +286,8 @@ const ExpertConnect = ({ userData }: ExpertConnectProps) => {
 
       {/* The Handshake Modal */}
       {selectedUser && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-[32px] p-5 max-w-md w-full shadow-2xl relative animate-in zoom-in duration-200">
+        <div className="fixed inset-0 z-999 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-4xl p-5 max-w-md w-full shadow-2xl relative animate-in zoom-in duration-200">
             <button onClick={() => setSelectedUser(null)} className="absolute top-4 right-4 text-slate-400 hover:bg-slate-100 p-2 rounded-full transition"><X size={20} /></button>
             
             <div className="flex items-center gap-4 mb-6">
@@ -311,7 +311,7 @@ const ExpertConnect = ({ userData }: ExpertConnectProps) => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-2 flex items-center gap-1"><Calendar size={14} /> Propose Meeting (Optional)</label>
+                <label className=" text-xs font-bold text-slate-700 uppercase mb-2 flex items-center gap-1"><Calendar size={14} /> Propose Meeting (Optional)</label>
                 <input 
                   type="datetime-local" 
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-blue outline-none"
@@ -337,7 +337,7 @@ const ExpertConnect = ({ userData }: ExpertConnectProps) => {
       {alertInfo.show && <Muialert message={alertInfo.message} severity={alertInfo.severity} onClose={() => setAlertInfo({ ...alertInfo, show: false })} />}
       
     </div>
-    <div className="h-4 md:h-6 w-full flex-shrink-0 pointer-events-none"></div>
+    <div className="h-4 md:h-6 w-full shrink-0 pointer-events-none"></div>
     </>
   );
 };

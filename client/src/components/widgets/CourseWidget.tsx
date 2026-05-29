@@ -173,11 +173,11 @@ const CourseWidget: React.FC<CourseWidgetProps> = ({ user }) => {
       {/* WIDGET CONTENT */}
       <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 relative z-10 flex flex-col space-y-4 pb-2">
         {isLoading ? (
-            <div className="h-full flex items-center justify-center min-h-[200px]">
+            <div className="h-full flex items-center justify-center min-h-50">
                 <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
             </div>
         ) : role?.toLowerCase() === 'teacher' && !activeSearch ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 py-8 px-4 min-h-[200px]">
+            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 py-8 px-4 min-h-50">
                 <User size={32} className="opacity-20 mb-3" />
                 <h4 className="text-xs font-bold text-slate-700 mb-1 text-center">Student Lookup</h4>
                 {/* 🚨 Text updated for pills */}
@@ -196,7 +196,7 @@ const CourseWidget: React.FC<CourseWidgetProps> = ({ user }) => {
                 <div 
                   key={course._id} 
                   onClick={() => navigate('/my-courses')}
-                  className={`bg-white rounded-2xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer group ${isPendingGraduation ? 'border-amber-200 bg-gradient-to-br from-white to-amber-50/30' : theme.border}`}
+                  className={`bg-white rounded-2xl border p-4 shadow-sm hover:shadow-md transition-all cursor-pointer group ${isPendingGraduation ? 'border-amber-200 bg-linear-to-br from-white to-amber-50/30' : theme.border}`}
                 >
                   {/* Header Row */}
                   <div className="flex items-start justify-between mb-3">
@@ -267,7 +267,7 @@ const CourseWidget: React.FC<CourseWidgetProps> = ({ user }) => {
               );
             })
         ) : (
-            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 py-8 px-4 min-h-[200px]">
+            <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200 py-8 px-4 min-h-50">
                 <Sparkles size={32} className="opacity-20 mb-3" />
                 <h4 className="text-xs font-bold text-slate-700 mb-1 text-center">No Active Projects</h4>
                 <p className="text-[10px] text-slate-500 text-center">

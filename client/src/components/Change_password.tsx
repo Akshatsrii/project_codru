@@ -65,6 +65,7 @@ function ChangePassword() {
 
         {/* Form Section */}
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+          {/* 🚨 FIX: Updated to slotProps */}
           <TextField
             fullWidth
             variant="outlined"
@@ -73,16 +74,19 @@ function ChangePassword() {
             value={oldPassword}
             onChange={(e) => setOldPassword(e.target.value)}
             required
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <VpnKey className="text-brand-blue" />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <VpnKey className="text-brand-blue" />
+                  </InputAdornment>
+                ),
+              }
             }}
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
           />
 
+          {/* 🚨 FIX: Updated to slotProps */}
           <TextField
             fullWidth
             variant="outlined"
@@ -91,16 +95,19 @@ function ChangePassword() {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Lock className="text-brand-blue" />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock className="text-brand-blue" />
+                  </InputAdornment>
+                ),
+              }
             }}
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
           />
 
+          {/* 🚨 FIX: Updated to slotProps */}
           <TextField
             fullWidth
             variant="outlined"
@@ -109,12 +116,14 @@ function ChangePassword() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Lock className="text-brand-blue" />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock className="text-brand-blue" />
+                  </InputAdornment>
+                ),
+              }
             }}
             sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
           />

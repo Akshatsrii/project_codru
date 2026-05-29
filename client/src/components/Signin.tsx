@@ -6,7 +6,7 @@ import { TextField, InputAdornment } from "@mui/material";
 // Components & Assets
 import SignInAnim from "./SignInAnim";
 import Muialert from "./Muialert";
-import GoogleIcon from "../assets/google.svg";
+import GoogleIcon from "../assets/google.svg?url";
 import { UserData } from "../App";
 
 interface SigninProps {
@@ -113,12 +113,14 @@ function Signin({ setUserData }: SigninProps) {
               value={value.username}
               onChange={handleChange}
               required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Person className="text-brand-blue" />
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Person className="text-brand-blue" />
+                    </InputAdornment>
+                  ),
+                }
               }}
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
             />
@@ -133,12 +135,14 @@ function Signin({ setUserData }: SigninProps) {
                 value={value.password}
                 onChange={handleChange}
                 required
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock className="text-brand-blue" />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock className="text-brand-blue" />
+                      </InputAdornment>
+                    ),
+                  }
                 }}
                 sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />

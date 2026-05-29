@@ -221,7 +221,7 @@ const UsersWidget: React.FC<UsersWidgetProps> = ({ user }) => {
       {/* WIDGET CONTENT (USER LIST) */}
       <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 relative z-10 flex flex-col gap-2 pb-2">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-full min-h-[150px]">
+          <div className="flex flex-col items-center justify-center h-full min-h-37.5">
             <Loader2 className="w-6 h-6 text-indigo-400 animate-spin mb-2" />
           </div>
         ) : displayedUsers.length > 0 ? (
@@ -294,7 +294,7 @@ const UsersWidget: React.FC<UsersWidgetProps> = ({ user }) => {
             })}
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center text-slate-400 h-full min-h-[150px] bg-slate-50 border border-dashed border-slate-200 rounded-2xl">
+          <div className="flex flex-col items-center justify-center text-slate-400 h-full min-h-37.5 bg-slate-50 border border-dashed border-slate-200 rounded-2xl">
             <Search size={28} className="opacity-20 mb-2" />
             <h4 className="text-xs font-bold text-slate-700 mb-1">No users found</h4>
             <p className="text-[9px] text-slate-500 text-center">Try a different search term.</p>
@@ -303,13 +303,24 @@ const UsersWidget: React.FC<UsersWidgetProps> = ({ user }) => {
       </div>
 
       {/* OTP DIALOG FOR ADMIN PROMOTION */}
-      <Dialog open={otpOpen} onClose={(e, reason) => { if (reason !== "backdropClick") setOtpOpen(false); }} disableEscapeKeyDown PaperProps={{ style: { padding: "30px", borderRadius: "24px", textAlign: "center", maxWidth: "400px" } }}>
+      <Dialog 
+        open={otpOpen} 
+        onClose={(e, reason) => { 
+          if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
+            setOtpOpen(false); 
+          }
+        }} 
+        slotProps={{ 
+          paper: { 
+            style: { padding: "30px", borderRadius: "24px", textAlign: "center", maxWidth: "400px" } 
+          } 
+        }}
+      >
         <DialogContent>
           <ShieldAlert className="w-12 h-12 text-rose-500 mx-auto mb-4" />
           <h3 className="text-xl font-display font-bold text-brand-blue mb-2">Security Verification</h3>
           <p className="text-xs text-gray-500 mb-6 px-4">Enter the code from your Admin Security Email to proceed with modifying clearance levels.</p>
           
-          {/* 🚨 CUSTOM TAILWIND OTP GRID */}
           <div className="flex justify-center gap-3">
             {[0, 1, 2, 3].map((index) => (
               <input

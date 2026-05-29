@@ -73,18 +73,18 @@ const GlobalSearch = () => {
 
       {/* Results Dropdown */}
       {isOpen && (
-        <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-[1000]">
+        <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-1000">
           {isLoading ? (
             <div className="p-4 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-brand-orange" /></div>
           ) : results.length > 0 ? (
-            <div className="max-h-[300px] overflow-y-auto">
+            <div className="max-h-75 overflow-y-auto">
               {results.map((user) => (
                 <div 
                   key={user._id}
                   onClick={() => handleSelect(user.username)}
                   className="flex items-center gap-3 p-3 hover:bg-slate-50 cursor-pointer transition-colors border-b border-gray-50 last:border-none"
                 >
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-brand-orange/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-brand-orange/10 flex items-center justify-center shrink-0">
                     {user.photo ? (
                       <img src={user.photo} className="w-full h-full object-cover" />
                     ) : (

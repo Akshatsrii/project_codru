@@ -120,7 +120,7 @@ function Publicprofile() {
       <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center sm:items-start gap-8">
         
         {/* Avatar */}
-        <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-white shadow-lg flex-shrink-0 bg-brand-orange/10 flex items-center justify-center">
+        <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-white shadow-lg shrink-0 bg-brand-orange/10 flex items-center justify-center">
           {user.photo ? (
             <img src={user.photo} alt={user.name} className="w-full h-full object-cover" />
           ) : (
@@ -232,7 +232,7 @@ function Publicprofile() {
       <Dialog 
         open={loginPromptOpen} 
         onClose={() => setLoginPromptOpen(false)}
-        PaperProps={{ style: { borderRadius: '24px', padding: '8px' } }}
+        slotProps={{ paper: { style: { borderRadius: '24px', padding: '8px' } } }}
       >
         <DialogTitle sx={{ fontWeight: 'bold', color: '#1765a4', textAlign: 'center', fontSize: '1.5rem' }}>
           Hold on there, Explorer! 🚀

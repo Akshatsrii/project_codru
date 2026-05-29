@@ -44,8 +44,8 @@ function Navbar({ userData, setUserData }: NavbarProps) {
           <div className="flex justify-between items-center h-20">
             
             {/* 🚨 LOGO (Restored to just being a Home Link) */}
-            <a href={`${MAIN_SITE}/index.html`} className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-              <img className="w-[5rem] md:w-[6.5rem] h-auto block drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)] transition-all" src="/logo.svg" alt="CuTe Learning" draggable="false" />
+            <a href={`${MAIN_SITE}/index.html`} className="shrink-0 flex items-center gap-2 cursor-pointer">
+              <img className="w-16 md:w-20 h-auto block drop-shadow-[0_4px_6px_rgba(0,0,0,0.3)] transition-all" src="/logo.svg" alt="CuTe Learning" draggable="false" />
             </a>
 
             <GlobalSearch />
@@ -173,7 +173,7 @@ function Navbar({ userData, setUserData }: NavbarProps) {
           📱 MOBILE BOTTOM NAVBAR (Social Context)
           ========================================= */}
       {isLoggedIn && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white flex items-center z-[1000] pb-safe shadow-[0_-15px_30px_-5px_rgba(0,0,0,0.15)] border-t border-gray-100">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white flex items-center z-1000 pb-safe shadow-[0_-15px_30px_-5px_rgba(0,0,0,0.15)] border-t border-gray-100">
           
           {/* Dashboard Bottom Button */}
           <NavLink 

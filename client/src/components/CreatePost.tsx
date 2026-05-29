@@ -116,7 +116,7 @@ const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
         {/* User Info & Text Area */}
         <div className="flex gap-4">
           {/* Avatar */}
-          <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 border-2 border-brand-orange/20">
+          <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-brand-orange/20">
             {userData?.Photo ? (
               <img src={userData.Photo} alt="Profile" className="w-full h-full object-cover" />
             ) : (

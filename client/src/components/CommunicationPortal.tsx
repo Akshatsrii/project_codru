@@ -221,7 +221,7 @@ const CommunicationPortal = () => {
   return (
     <>
       {/* THE FLOATING TRIGGER */}
-      <button onClick={() => setIsOpen(true)} className={`fixed bottom-8 right-8 z-[90] bg-gradient-to-br from-brand-blue to-blue-600 text-white p-4 rounded-full shadow-xl shadow-blue-500/30 hover:scale-110 transition-all duration-300 ${isOpen ? 'opacity-0 pointer-events-none scale-50' : 'opacity-100 scale-100'}`}>
+      <button onClick={() => setIsOpen(true)} className={`fixed bottom-8 right-8 z-90 bg-linear-to-br from-brand-blue to-blue-600 text-white p-4 rounded-full shadow-xl shadow-blue-500/30 hover:scale-110 transition-all duration-300 ${isOpen ? 'opacity-0 pointer-events-none scale-50' : 'opacity-100 scale-100'}`}>
         <div className="relative">
           <MessageSquare size={24} className="text-white drop-shadow-sm" />
           <span className="absolute -top-2 -right-2 bg-brand-orange text-white text-[10px] font-black w-4 h-4 flex items-center justify-center rounded-full border border-brand-blue shadow-sm">{circle.length}</span>
@@ -229,10 +229,10 @@ const CommunicationPortal = () => {
       </button>
 
       {/* THE COMMUNICATION PORTAL OVERLAY */}
-      <div className={`fixed bottom-24 right-8 z-[100] w-96 bg-white rounded-[32px] shadow-2xl border border-slate-100 overflow-hidden flex flex-col transition-all duration-500 origin-bottom-right ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 pointer-events-none translate-y-10'}`} style={{ height: '600px', maxHeight: '75vh' }}>
+      <div className={`fixed bottom-24 right-8 z-100 w-96 bg-white rounded-4xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col transition-all duration-500 origin-bottom-right ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 pointer-events-none translate-y-10'}`} style={{ height: '600px', maxHeight: '75vh' }}>
         
         {/* DYNAMIC HEADER */}
-        <div className="bg-gradient-to-r from-brand-blue to-blue-600 text-white p-5 flex items-center justify-between shadow-sm z-20">
+        <div className="bg-linear-to-r from-brand-blue to-blue-600 text-white p-5 flex items-center justify-between shadow-sm z-20">
           {activeChat ? (
             <div className="flex items-center gap-3">
               <button 
@@ -391,7 +391,7 @@ const CommunicationPortal = () => {
               
               {/* THE STREAMLINED PINNED BANNER */}
               {activeChat.meetingDate && new Date(activeChat.meetingDate) > new Date() && (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 p-4 shadow-sm text-center z-10 shrink-0">
+                <div className="bg-linear-to-r from-blue-50 to-indigo-50 border-b border-blue-100 p-4 shadow-sm text-center z-10 shrink-0">
                   <p className="text-[10px] font-black text-brand-blue uppercase tracking-widest mb-1">Upcoming Meeting</p>
                   <p className="text-sm font-bold text-slate-800">
                     {new Date(activeChat.meetingDate).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}

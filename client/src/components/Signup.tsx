@@ -212,7 +212,7 @@ function Signup() {
               value={value.name}
               onChange={handleChange}
               required
-              InputProps={{ startAdornment: (<InputAdornment position="start"><BadgeIcon className="text-brand-blue" /></InputAdornment>) }}
+              slotProps={{ input: { startAdornment: (<InputAdornment position="start"><BadgeIcon className="text-brand-blue" /></InputAdornment>) } }}
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
             />
 
@@ -231,14 +231,16 @@ function Signup() {
                 usernameStatus === "taken" ? "Username is already taken." :
                 usernameStatus === "available" ? "Username is available!" : ""
               }
-              InputProps={{ 
-                startAdornment: (<InputAdornment position="start"><Person className="text-brand-blue" /></InputAdornment>),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {usernameStatus === "checking" && <div className="w-4 h-4 border-2 border-brand-blue border-t-transparent rounded-full animate-spin"></div>}
-                    {usernameStatus === "available" && <span className="text-green-500 font-bold">✔</span>}
-                  </InputAdornment>
-                )
+              slotProps={{
+                input: {
+                  startAdornment: (<InputAdornment position="start"><Person className="text-brand-blue" /></InputAdornment>),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {usernameStatus === "checking" && <div className="w-4 h-4 border-2 border-brand-blue border-t-transparent rounded-full animate-spin"></div>}
+                      {usernameStatus === "available" && <span className="text-green-500 font-bold">✔</span>}
+                    </InputAdornment>
+                  )
+                }
               }}
               sx={{ 
                 '& .MuiOutlinedInput-root': { borderRadius: '12px' },
@@ -250,29 +252,32 @@ function Signup() {
               fullWidth
               variant="outlined"
               name="email"
+              type="email"
               label="Email Address"
               value={value.email}
               onChange={handleChange}
               required
-              InputProps={{
-                startAdornment: (<InputAdornment position="start"><Email className="text-brand-blue" /></InputAdornment>),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {!value.isEmailVerified && value.email && (
-                      <button 
-                        type="button"
-                        onClick={handleEmailVerification}
-                        className="flex items-center gap-2 text-xs font-bold text-brand-orange hover:underline disabled:opacity-50 disabled:no-underline"
-                        disabled={!!timer || isOtpSending}
-                      >
-                        {isOtpSending ? (
-                          <><div className="w-3 h-3 border-2 border-brand-orange border-t-transparent rounded-full animate-spin"></div> Sending...</>
-                        ) : (timer ? `Resend in ${timer}s` : "Verify")}
-                      </button>
-                    )}
-                    {value.isEmailVerified && <span className="text-green-500 font-bold">✔ Verified</span>}
-                  </InputAdornment>
-                )
+              slotProps={{
+                input: {
+                  startAdornment: (<InputAdornment position="start"><Email className="text-brand-blue" /></InputAdornment>),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      {!value.isEmailVerified && value.email.length > 3 && value.email.includes("@") && (
+                        <button 
+                          type="button"
+                          onClick={handleEmailVerification}
+                          className="flex items-center gap-2 text-xs font-bold text-brand-orange hover:underline disabled:opacity-50 disabled:no-underline"
+                          disabled={!!timer || isOtpSending}
+                        >
+                          {isOtpSending ? (
+                            <><div className="w-3 h-3 border-2 border-brand-orange border-t-transparent rounded-full animate-spin"></div> Sending...</>
+                          ) : (timer ? `Resend in ${timer}s` : "Verify")}
+                        </button>
+                      )}
+                      {value.isEmailVerified && <span className="text-green-500 font-bold">✔ Verified</span>}
+                    </InputAdornment>
+                  )
+                }
               }}
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
             />
@@ -280,12 +285,12 @@ function Signup() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <TextField
                 fullWidth variant="outlined" name="password" type="password" label="Password" value={value.password} onChange={handleChange} required
-                InputProps={{ startAdornment: (<InputAdornment position="start"><Lock className="text-brand-blue" /></InputAdornment>) }}
+                slotProps={{ input: { startAdornment: (<InputAdornment position="start"><Lock className="text-brand-blue" /></InputAdornment>) } }}
                 sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
               <TextField
                 fullWidth variant="outlined" name="cpassword" type="password" label="Confirm Password" value={value.cpassword} onChange={handleChange} required
-                InputProps={{ startAdornment: (<InputAdornment position="start"><Lock className="text-brand-blue" /></InputAdornment>) }}
+                slotProps={{ input: { startAdornment: (<InputAdornment position="start"><Lock className="text-brand-blue" /></InputAdornment>) } }}
                 sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
             </div>
@@ -336,7 +341,7 @@ function Signup() {
           </button>
 
           <p className="mt-8 text-center text-gray-400 text-sm font-medium">
-            Already have an account? <NavLink to="/signin" className="text-brand-blue font-black hover:underline ml-1">Sign In</NavLink>
+            Already have an account? <NavLink to="/signin" className="text-brand-blue font-bold hover:underline ml-1">Sign In</NavLink>
           </p>
         </div>
       </div>
@@ -345,13 +350,12 @@ function Signup() {
       <Dialog 
         open={open} 
         onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') setOpen(false); }}
-        disableEscapeKeyDown
-        PaperProps={{ style: { borderRadius: '24px', padding: '10px' } }}
+        slotProps={{ paper: { style: { borderRadius: '24px', padding: '10px' } } }}
       >
         <div className="p-8 text-center flex flex-col items-center">
           <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mb-4"><Email className="text-brand-blue" fontSize="large" /></div>
           <h3 className="text-2xl font-display font-bold text-brand-blue mb-2">Verify Your Email</h3>
-          <p className="text-gray-500 mb-8 text-sm max-w-[250px]">We've sent a 4-digit code to <br/><span className="font-bold text-gray-700">{value.email}</span></p>
+          <p className="text-gray-500 mb-8 text-sm max-w-62.5">We've sent a 4-digit code to <br/><span className="font-bold text-gray-700">{value.email}</span></p>
           
           <div className="flex justify-center gap-3">
             {[0, 1, 2, 3].map((index) => (

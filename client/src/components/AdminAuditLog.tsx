@@ -117,7 +117,7 @@ export default function AdminAuditLog() {
   if (loading) return <div className="flex justify-center p-10"><Loader2 className="w-8 h-8 animate-spin text-brand-orange" /></div>;
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 animate-fade-in flex flex-col h-[700px]">
+    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 animate-fade-in flex flex-col h-175">
       
       {/* Header */}
       <div className="mb-6">

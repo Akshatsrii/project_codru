@@ -107,7 +107,7 @@ const AuditWidget: React.FC<AuditWidgetProps> = ({ user }) => {
       {/* WIDGET CONTENT (SCROLLABLE TIMELINE) */}
       <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 relative z-10 pb-2">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-full min-h-[150px]">
+          <div className="flex flex-col items-center justify-center h-full min-h-37.5">
             <Loader2 className="w-6 h-6 text-rose-400 animate-spin mb-2" />
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Decrypting Logs...</span>
           </div>
@@ -165,7 +165,7 @@ const AuditWidget: React.FC<AuditWidgetProps> = ({ user }) => {
             })}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center text-slate-400 bg-slate-50 border border-dashed border-slate-200 rounded-2xl h-full min-h-[150px]">
+          <div className="flex flex-col items-center justify-center text-slate-400 bg-slate-50 border border-dashed border-slate-200 rounded-2xl h-full min-h-37.5">
             <ShieldAlert size={28} className="opacity-20 mb-2 text-rose-500" />
             <h4 className="text-xs font-bold text-slate-700 mb-1">No Activity Detected</h4>
             <p className="text-[9px] text-slate-500 text-center leading-relaxed">

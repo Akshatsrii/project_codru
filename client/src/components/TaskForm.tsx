@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { DataGrid, GridColDef, GridToolbarContainer, GridToolbarQuickFilter } from "@mui/x-data-grid";
+// 1. 🚨 Import the API hook and Toolbar from Data Grid
+import { DataGrid, GridColDef, Toolbar, useGridApiContext } from "@mui/x-data-grid";
 import { RocketLaunch, ArrowBack, Edit, Delete } from "@mui/icons-material";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
+// 2. 🚨 Import standard MUI components for our custom search
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, InputAdornment } from "@mui/material";
 
 // Theme survival kit
 import { ThemeProvider, useTheme, alpha, lighten, darken } from "@mui/material/styles";
 
-import { Loader2 } from "lucide-react";
+// 3. 🚨 Import the Search icon from lucide-react
+import { Loader2, Search } from "lucide-react";
 
 // Components
 import Muialert from "./Muialert";
@@ -18,6 +21,36 @@ interface ProblemRecord {
   question: string;
   answer: string;
   link: string;
+}
+
+// 4. 🚨 NEW: Create a custom search bar that talks to the Data Grid
+function CustomGridSearch() {
+  const apiRef = useGridApiContext();
+
+  return (
+    <TextField
+      placeholder="Search problems..."
+      size="small"
+      onChange={(event) => {
+        // Split the search string by spaces and tell the grid to filter
+        const searchWords = event.target.value.split(' ').filter((word) => word !== '');
+        apiRef.current.setQuickFilterValues(searchWords);
+      }}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search size={16} className="text-gray-400" />
+            </InputAdornment>
+          ),
+        },
+      }}
+      sx={{ 
+        width: "250px", 
+        '& .MuiOutlinedInput-root': { borderRadius: '8px', bgcolor: 'white' } 
+      }}
+    />
+  );
 }
 
 const UpdateReport = () => {
@@ -238,16 +271,13 @@ const UpdateReport = () => {
     }
   ];
 
+  // 5. 🚨 UPDATED: Inject our Custom Search into the Toolbar!
   const CustomToolbar = useCallback((props: any) => {
     return (
-      <GridToolbarContainer {...props} className="flex justify-between items-center p-4 border-b border-gray-100 bg-gray-50/50">
+      <Toolbar {...props} className="flex justify-between items-center p-4 border-b border-gray-100 bg-gray-50/50">
         <h2 className="px-4 text-lg font-bold text-gray-700">Evolution History</h2>
-        <GridToolbarQuickFilter 
-          placeholder="Search problems..." 
-          size="small"
-          sx={{ width: "250px", '& .MuiOutlinedInput-root': { borderRadius: '8px', bgcolor: 'white' } }} 
-        />
-      </GridToolbarContainer>
+        <CustomGridSearch />
+      </Toolbar>
     );
   }, []);
 
@@ -261,14 +291,13 @@ const UpdateReport = () => {
             <ArrowBack sx={{ color: '#4b5563' }} />
           </button>
           <div>
-            {/* 🚨 Shrunk heading for mobile */}
             <h1 className="text-2xl md:text-3xl font-display font-bold text-brand-blue">Update Report</h1>
             <p className="text-gray-500 text-xs md:text-sm mt-1">Charting the planetary path for <span className="font-bold text-brand-orange">@{username}</span></p>
           </div>
         </div>
 
         {/* TOP SECTION: The Compact Form */}
-        <div className="bg-white rounded-[24px] shadow-sm border border-gray-200 p-6 md:p-8 relative">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-6 md:p-8 relative">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
               <div className="md:col-span-2">
@@ -284,7 +313,7 @@ const UpdateReport = () => {
                 <input type="url" className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-blue outline-none transition" value={link} onChange={(e) => setLink(e.target.value)} />
               </div>
             </div>
-            {/* RESTORED: Classic Wide Button Design */}
+            
             <div>
               <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Solution Figured</label>
               <textarea 
@@ -309,7 +338,7 @@ const UpdateReport = () => {
         </div>
 
         {/* BOTTOM SECTION: The DataGrid */}
-        <div className="bg-white rounded-[24px] shadow-sm border border-gray-200 overflow-hidden h-[500px] flex flex-col flex-shrink-0">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden h-125 flex flex-col shrink-0">
           <ThemeProvider theme={patchedTheme}>
             <DataGrid
               rows={history}
@@ -330,8 +359,8 @@ const UpdateReport = () => {
           </ThemeProvider>
         </div>
         
-        {/* 🚨 BOTTOM SPACER TO PREVENT MOBILE NAV CLIPPING */}
-        <div className="h-24 md:h-8 w-full flex-shrink-0"></div>
+        {/* BOTTOM SPACER */}
+        <div className="h-24 md:h-8 w-full shrink-0"></div>
       </div>
 
       {/* EDIT MODAL */}

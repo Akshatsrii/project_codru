@@ -66,7 +66,7 @@ const EventModal: React.FC<EventModalProps> = ({ event, onClose, isOwner, onEdit
             </p>
           </div>
           
-          <div className="flex items-center gap-1 flex-shrink-0">
+          <div className="flex items-center gap-1 shrink-0">
             {isOwner && (
               <>
                 <button 
@@ -138,7 +138,7 @@ const EventModal: React.FC<EventModalProps> = ({ event, onClose, isOwner, onEdit
                         <div className={`p-2 rounded-lg ${isVideo ? 'bg-blue-100 text-brand-blue' : 'bg-orange-100 text-brand-orange'}`}>
                           {isVideo ? <PlayCircle size={16} /> : <FileText size={16} />}
                         </div>
-                        <span className="truncate max-w-[250px]">
+                        <span className="truncate max-w-62.5">
                           {/* 🚨 NEW: Show text only on the clicked file */}
                           {isThisFileUnlocking ? "Unlocking File..." : att.title}
                         </span>

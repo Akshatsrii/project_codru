@@ -82,7 +82,7 @@ const ForgetPassword = () => {
 
   return (
     <div className="min-h-screen pt-20 pb-12 flex items-center justify-center bg-slate-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 p-8 min-h-[400px] flex flex-col justify-center">
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 p-8 min-h-100 flex flex-col justify-center">
         
         {/* SCENARIO 1: Still Checking Token */}
         {isValidating ? (
@@ -135,12 +135,14 @@ const ForgetPassword = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock className="text-brand-blue" />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock className="text-brand-blue" />
+                      </InputAdornment>
+                    ),
+                  }
                 }}
                 sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
@@ -153,12 +155,14 @@ const ForgetPassword = () => {
                 value={cpassword}
                 onChange={(e) => setCpassword(e.target.value)}
                 required
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock className="text-brand-blue" />
-                    </InputAdornment>
-                  ),
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Lock className="text-brand-blue" />
+                      </InputAdornment>
+                    ),
+                  }
                 }}
                 sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
               />
