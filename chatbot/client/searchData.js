@@ -85,7 +85,7 @@ OUTPUT REQUIREMENTS:
 - Do not infer information that is not explicitly supported by the context.`
    
 });
-return response.text;
+return response.candidates[0].content;
 };
 
 export {generateResponse, searchData};
