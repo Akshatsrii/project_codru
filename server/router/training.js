@@ -12,6 +12,7 @@ const transporter = require('../utils/transporter');
 const { bulkEmailTemplate } = require("../utils/bulkEmailTemplate");
 const path = require('path');
 const fs = require('fs');
+const Internship = require("../models/InternshipSchema");
 
 const upload = multer({ storage: multer.memoryStorage() });
 router.use(cookieParser());
@@ -302,6 +303,103 @@ router.post("/send-bulk", async (req, res) => {
   // 3. CLOSE THE STREAM WHEN FINISHED
   res.write(`data: ${JSON.stringify({ complete: true })}\n\n`);
   res.end();
+});
+
+// --- MULTER SETUP FOR FILE UPLOADS ---
+// This saves the uploaded resumes to a 'uploads/resumes' folder on your server
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/resumes/"); // Ensure this directory exists in your project
+  },
+  filename: function (req, file, cb) {
+    // Creates a unique filename: timestamp-originalName (e.g., 163456789-resume.pdf)
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+// Restrict file types to PDF and Word documents
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /pdf|doc|docx/;
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  if (extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error("Only .pdf, .doc, and .docx files are allowed!"));
+  }
+};
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
+// -------------------------------------
+
+// The Route: Notice we added `upload.single("resume")` before the async handler
+// "resume" matches the `name="resume"` attribute in your frontend HTML input
+router.post("/internship-register", authenticate, upload.single("resume"), async (req, res) => {
+  const username = req.user.username;
+  const userEmail = req.user.email;
+  const userPhone = req.user.phone; 
+  console.log("Authenticated username:", username, userEmail, userPhone);
+
+  try {
+    // Extract text fields from req.body
+    const {
+      name,
+      email,
+      subject,
+      startDate,
+      endDate
+    } = req.body;
+
+    // Validate required text fields
+    if (!name || !email || !subject || !startDate || !endDate) {
+      return res.status(400).json({ error: "Please fill all required fields." });
+    }
+
+    // Validate that the file was successfully uploaded by multer
+    if (!req.file) {
+      return res.status(400).json({ error: "Please upload your resume." });
+    }
+
+    // Date logic validation (Backend double-check)
+    if (new Date(startDate) > new Date(endDate)) {
+        return res.status(400).json({ error: "End Date cannot be earlier than Start Date." });
+    }
+
+    // Create the path/URL to save to the database
+    // Depending on your setup, this might be an S3 URL, but here it's a local path
+    const resumeUrl = req.file.path; 
+
+    // Create a new Internship document
+    const newInternship = new Internship({
+      // user_id: req.userId, // Optional: if you want to link it to the logged-in user's ID
+      name,
+      email,
+      subject,
+      startDate,
+      endDate,
+      resumeUrl
+    });
+    
+    // Save to the database
+    await newInternship.save();
+
+    // Send success response
+    return res.status(201).json({ message: "Internship registration saved successfully!" });
+
+  } catch (err) {
+    console.error("Error in /internship-register:", err);
+    
+    // Handle specific Multer errors (like file too large)
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: err.message });
+    }
+    
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 
