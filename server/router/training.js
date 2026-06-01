@@ -335,10 +335,7 @@ router.post("/send-bulk", async (req, res) => {
 // The Route: Notice we added `upload.single("resume")` before the async handler
 // "resume" matches the `name="resume"` attribute in your frontend HTML input
 router.post("/internship-register", upload.single("resume"), async (req, res) => {
-  const username = req.user.username;
-  const userEmail = req.user.email;
-  const userPhone = req.user.phone; 
-  console.log("Authenticated username:", username, userEmail, userPhone);
+ 
 
   try {
     // Extract text fields from req.body
