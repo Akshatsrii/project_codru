@@ -33,6 +33,30 @@ const fonts = {
 };
 pdfmake.addFonts(fonts);
 
+// --- MULTER SETUP FOR FILE UPLOADS ---
+// This saves the uploaded resumes to a 'uploads/resumes' folder on your server
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/resumes/"); // Ensure this directory exists in your project
+  },
+  filename: function (req, file, cb) {
+    // Creates a unique filename: timestamp-originalName (e.g., 163456789-resume.pdf)
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+// Restrict file types to PDF and Word documents
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /pdf|doc|docx/;
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  if (extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error("Only .pdf, .doc, and .docx files are allowed!"));
+  }
+};
+
 //for user details
 router.get("/training", authenticate, async (req, res) => {
       try {
@@ -305,35 +329,7 @@ router.post("/send-bulk", async (req, res) => {
   res.end();
 });
 
-// --- MULTER SETUP FOR FILE UPLOADS ---
-// This saves the uploaded resumes to a 'uploads/resumes' folder on your server
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/resumes/"); // Ensure this directory exists in your project
-  },
-  filename: function (req, file, cb) {
-    // Creates a unique filename: timestamp-originalName (e.g., 163456789-resume.pdf)
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
 
-// Restrict file types to PDF and Word documents
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /pdf|doc|docx/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  if (extname) {
-    return cb(null, true);
-  } else {
-    cb(new Error("Only .pdf, .doc, and .docx files are allowed!"));
-  }
-};
-
-const upload = multer({ 
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
-});
 // -------------------------------------
 
 // The Route: Notice we added `upload.single("resume")` before the async handler
