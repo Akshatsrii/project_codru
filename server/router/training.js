@@ -334,67 +334,120 @@ router.post("/send-bulk", async (req, res) => {
 
 // The Route: Notice we added `upload.single("resume")` before the async handler
 // "resume" matches the `name="resume"` attribute in your frontend HTML input
-router.post("/internship-register", upload.single("resume"), async (req, res) => {
+// router.post("/internship-register", upload.single("resume"), async (req, res) => {
  
 
-  try {
-    // Extract text fields from req.body
-    const {
-      name,
-      email,
-      subject,
-      startDate,
-      endDate
-    } = req.body;
+//   try {
+//     // Extract text fields from req.body
+//     const {
+//       name,
+//       email,
+//       subject,
+//       startDate,
+//       endDate
+//     } = req.body;
 
-    // Validate required text fields
+//     // Validate required text fields
+//     if (!name || !email || !subject || !startDate || !endDate) {
+//       return res.status(400).json({ error: "Please fill all required fields." });
+//     }
+
+//     // Validate that the file was successfully uploaded by multer
+//     if (!req.file) {
+//       return res.status(400).json({ error: "Please upload your resume." });
+//     }
+
+//     // Date logic validation (Backend double-check)
+//     if (new Date(startDate) > new Date(endDate)) {
+//         return res.status(400).json({ error: "End Date cannot be earlier than Start Date." });
+//     }
+
+//     // Create the path/URL to save to the database
+//     // Depending on your setup, this might be an S3 URL, but here it's a local path
+//     const resumeUrl = req.file.path; 
+
+//     // Create a new Internship document
+//     const newInternship = new Internship({
+//       // user_id: req.userId, // Optional: if you want to link it to the logged-in user's ID
+//       name,
+//       email,
+//       subject,
+//       startDate,
+//       endDate,
+//       resumeUrl
+//     });
+    
+//     // Save to the database
+//     await newInternship.save();
+
+//     // Send success response
+//     return res.status(201).json({ message: "Internship registration saved successfully!" });
+
+//   } catch (err) {
+//     console.error("Error in /internship-register:", err);
+    
+//     // Handle specific Multer errors (like file too large)
+//     if (err instanceof multer.MulterError) {
+//         return res.status(400).json({ error: err.message });
+//     }
+    
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
+
+// Ensure multer is imported and configured properly above this route
+// const multer = require('multer');
+// const upload = multer({ dest: 'uploads/' }); // or your custom storage configuration
+
+router.post("/internship-register", upload.single("resume"), async (req, res) => {
+  try {
+    // 1. Immediately validate that the file was intercepted by multer
+    if (!req.file) {
+      return res.status(400).json({ error: "Please upload your resume. File is missing or invalid." });
+    }
+
+    // 2. Extract text fields from req.body
+    const { name, email, subject, startDate, endDate } = req.body;
+
+    // 3. Validate required text fields
     if (!name || !email || !subject || !startDate || !endDate) {
       return res.status(400).json({ error: "Please fill all required fields." });
     }
 
-    // Validate that the file was successfully uploaded by multer
-    if (!req.file) {
-      return res.status(400).json({ error: "Please upload your resume." });
-    }
-
-    // Date logic validation (Backend double-check)
+    // 4. Date logic validation
     if (new Date(startDate) > new Date(endDate)) {
         return res.status(400).json({ error: "End Date cannot be earlier than Start Date." });
     }
 
-    // Create the path/URL to save to the database
-    // Depending on your setup, this might be an S3 URL, but here it's a local path
+    // 5. Create the path/URL to save to the database
     const resumeUrl = req.file.path; 
 
     // Create a new Internship document
     const newInternship = new Internship({
-      // user_id: req.userId, // Optional: if you want to link it to the logged-in user's ID
       name,
       email,
       subject,
       startDate,
       endDate,
-      resumeUrl
+      resumeUrl // This will now definitely be populated
     });
     
     // Save to the database
     await newInternship.save();
 
-    // Send success response
     return res.status(201).json({ message: "Internship registration saved successfully!" });
 
   } catch (err) {
     console.error("Error in /internship-register:", err);
     
-    // Handle specific Multer errors (like file too large)
+    // If an error happens inside the try block that is Multer-related
     if (err instanceof multer.MulterError) {
-        return res.status(400).json({ error: err.message });
+        return res.status(400).json({ error: `Upload error: ${err.message}` });
     }
     
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
 
 
 module.exports = router;
