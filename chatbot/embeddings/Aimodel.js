@@ -4,7 +4,6 @@ dotenv.config();
 
 
 const genai = new GoogleGenAI({
-       apiKey: process.env.GOOGLE_API_KEY2
+    apiKey: process.env.GOOGLE_API_KEY,
 });
-
-export default genai;
+export { genai };

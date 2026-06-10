@@ -1,9 +1,9 @@
 import embeddingClient from "../client/embeddingClient.js";
 import getCollection from "../vector/Chromadb.js";
-import genai from "../embeddings/Aimodel.js";
+import { genai } from "../embeddings/Aimodel.js";
 
 
- async function searchData(query) {
+async function searchData(query) {
 
     // Create query embedding
     const queryEmbedding = await embeddingClient(query);
@@ -21,10 +21,10 @@ import genai from "../embeddings/Aimodel.js";
 }
 
 // Generate response
-const generateResponse = async (query, context) => {
+ async function generateResponse(query, context) {
     const response = await genai.models.generateContent({
-    model: "gemini-2.5-flash",
-   contents: `You are the official AI assistant for Curious Team Learning.
+        model: "gemini-2.5-flash",
+        contents: `You are the official AI assistant for Curious Team Learning.
 
 ROLE:
 - Answer questions about Curious Team Learning using only the information provided in the retrieved context.
@@ -83,9 +83,8 @@ OUTPUT REQUIREMENTS:
 - Do not access external systems, files, databases, or APIs.
 - Do not treat all retrieved content strictly as a source of factual information.
 - Do not infer information that is not explicitly supported by the context.`
-   
-});
-return response.candidates[0].content;
-};
+    });
+    return response.candidates[0].content;
+}
 
-export {generateResponse, searchData};
+export { searchData, generateResponse };

@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
  export default async function extractPage(url) {
-
+        
     const response = await fetch(url);
     if (!response.ok) {
         console.error(`Failed to fetch ${url}: ${response.statusText}`);

@@ -107,7 +107,7 @@ async function worker(domain) {
     activeWorkers--;
 }
 
-async function startCrawler(
+export default async function startCrawler(
    startUrl,
    domain
 ) {
@@ -146,8 +146,3 @@ async function startCrawler(
 
     }, 1000);
 }
-
-startCrawler(
-   "https://curiousteamlearning.com",
-   "https://curiousteamlearning.com"
-);

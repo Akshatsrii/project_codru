@@ -1,31 +1,52 @@
-import express from 'express';
-import {Server} from 'socket.io';
-import http from 'http';
-import {generateResponse, searchData} from './client/searchData.js';
+import express from "express";
+import { Server} from "socket.io";
+import http from "http";
+import { searchData , generateResponse} from "./client/searchData.js";
+import { setupCronJobs } from "./services/cronSetup.js";
+import startCrawler from "./services/crawler.js";
+import ingest from "./embeddings/Ingest.js";
+import {rateLimit} from "./middleware/ratelimiting.js";
 const app = express();
-const port = 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: '*',
-        
-    }
+        origin: "https://curiousteamlearning.com/",
+        crossOrigin: true,
+        credentials: true
+    },
 });
 
-io.on('connection', async (socket) => {
-    console.log('a user connected');
-    socket.on('chat message', async (msg) => {
-    const response = await searchData(msg);
-    const docs = response.documents[0];// Convert array to text context
-    const context = docs.join("\n\n");
-    const answer = await generateResponse(msg, context);
-    socket.emit('chat response', answer); 
+setupCronJobs();
+app.use(rateLimit);
+app.get("/health", (req, res) => {
+    res.status(200).send("OK");
+});
+io.on("connection", (socket) => {
+    console.log("Client connected");
+    socket.on("userMessage", async (data) => {
+        try {
+            const result = await searchData(data.query);
+            const docs = result.documents[0];
+            // Convert array to text context
+            const context = docs.join("\n\n");
+            const response = await generateResponse(data.query, context);
+            
+            // Extract text content from response
+            const responseText = response.parts[0].text || JSON.stringify(response);
+            
+            // Send response back to client
+            socket.emit("botResponse", { response: responseText });
+        } catch (error) {
+            console.error("Error processing message:", error);
+            socket.emit("error", error.message);
+        }
     });
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
+    socket.on("disconnect", () => {
+        console.log("Client disconnected");
     });
+
 });
 
-server.listen(port, () => {
-    console.log(`listening on:${port}`);
+server.listen(3000, () => {
+    console.log("Server listening on port 3000");
 });

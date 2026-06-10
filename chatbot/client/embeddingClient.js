@@ -1,4 +1,4 @@
-import genai from "../embeddings/Aimodel.js";
+import { genai } from "../embeddings/Aimodel.js";
 
 export default async function embeddingClient(query) {
     const response = await genai.models.embedContent({
