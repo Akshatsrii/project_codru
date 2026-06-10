@@ -6,11 +6,13 @@ import { setupCronJobs } from "./services/cronSetup.js";
 import startCrawler from "./services/crawler.js";
 import ingest from "./embeddings/Ingest.js";
 import {rateLimit} from "./middleware/ratelimiting.js";
+import { config } from "dotenv";
+config();
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://curiousteamlearning.com/",
+        origin: process.env.CLIENT_URL ,
         crossOrigin: true,
         credentials: true
     },
