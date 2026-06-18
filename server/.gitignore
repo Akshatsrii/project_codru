@@ -3,3 +3,15 @@
 node_modules/
 config.env 
 npm-debug.log
+
+# Environment Files
+.env
+client/.env
+server/.env
+
+# Dependencies
+node_modules
+
+# Build files
+dist
+build

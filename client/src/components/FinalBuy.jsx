@@ -1,70 +1,161 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import "../styles/Buy.css";
-import BuyAnim from './BuyAnim';
-import { TextField, Button, Checkbox, FormControlLabel, Link, InputAdornment } from '@mui/material';
+
+// Buy Animation Temporarily Removed
+// import BuyAnim from './BuyAnim';
+
+import {
+  TextField,
+  Button,
+  InputAdornment
+} from '@mui/material';
+
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
-import { NavLink } from 'react-router-dom';
+
+import axios from "axios";
 
 const FinalBuy = () => {
 
+  // Mobile Number State
   const [formValues, setFormValues] = useState({
     mobile: '',
   });
 
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Handle Input Change
   const handleInputChange = (e) => {
+
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+
   };
 
-  const handleSubmit = (e) => {
+  // Handle Payment
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
-    console.log('Form submitted:', formValues);
-    // Add logic for handling form submission (e.g., sending data to backend)
+
+    // Start Loading
+    setLoading(true);
+
+    try {
+
+      // Send Mobile Number to Backend
+      const response = await axios.post(
+        "http://localhost:8080/api/payment/pay",
+        {
+          mobile: formValues.mobile,
+        }
+      );
+
+      console.log(response.data);
+
+      // Payment Success
+    if (response.data.success) {
+
+  console.log("Redirect URL:", response.data.redirectUrl);
+localStorage.setItem(
+  "phonepeOrderId",
+  response.data.orderId
+);
+  window.location.href =
+    response.data.redirectUrl;
+
+}
+    } catch (error) {
+
+      console.log(error);
+
+      // Stop Loading if Error
+      setLoading(false);
+
+    }
+
   };
+
   return (
+
     <div className="buy-page">
+
       <div className="overlay-bg">
+
         <div className="login-wrapper">
+
+          {/* LEFT SECTION */}
           <div className="left-section">
-            <BuyAnim/>
+
+            {/* Animation Removed Temporarily */}
+
           </div>
+
+          {/* RIGHT SECTION */}
           <div className="right-section">
-           
+
             <div className='buy-text-content'>
-            
-          <TextField
-            label="Mobile"
-            type='tel'
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            sx={{width: '80%', marginLeft: '35px', marginTop: '45px'}}
-            required
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PhoneIphoneIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-    <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        sx={{width: '50%', marginLeft: '90px'}}
-        className="proceed-to-buy"
-        onClick={handleSubmit}
-      >
-        Proceed to Buy
-      </Button>
-       
+
+              {/* MOBILE INPUT */}
+              <TextField
+                label="Mobile"
+                name="mobile"
+                value={formValues.mobile}
+                onChange={handleInputChange}
+                type='tel'
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                sx={{
+                  width: '80%',
+                  marginLeft: '35px',
+                  marginTop: '45px'
+                }}
+                required
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PhoneIphoneIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              {/* PAYMENT BUTTON */}
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                sx={{
+                  width: '50%',
+                  marginLeft: '90px'
+                }}
+                className="proceed-to-buy"
+                onClick={handleSubmit}
+              >
+
+                {loading
+                  ? "Processing..."
+                  : "Proceed to Buy"}
+
+              </Button>
+
             </div>
-            </div>
+
+          </div>
+
         </div>
+
       </div>
+
     </div>
+
   );
+
 };
 
 export default FinalBuy;

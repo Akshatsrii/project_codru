@@ -19,6 +19,7 @@ const ConnectionRequest = require("./models/connectionRequestSchema");
 const adminOtpTemplate = require("./utils/adminOtpTemplate");
 const OTP = require("./models/otpSchema");
 const transporter = require('./utils/transporter'); // Adjust the path if needed
+const paymentRoutes = require("./router/paymentRoutes");
 
 dotenv.config({ path: "./config.env" });
 const app = express();
@@ -87,6 +88,7 @@ app.use(require("./router/notification.js"));
 app.use(require('./router/whatsapp'));
 app.use(require('./router/crm')); 
 app.use(require('./router/overview'));
+app.use("/api/payment", paymentRoutes);
 
 let notifications = {};
 
