@@ -124,13 +124,17 @@ await newPayment.save();
 console.log(
   "Payment Saved As Pending"
 );
+console.log(
+  "FRONTEND_URL:",
+  process.env.FRONTEND_URL
+);
 const payRequest =
   StandardCheckoutPayRequest
     .builder()
     .merchantOrderId(merchantOrderId)
     .amount(99900)
-    .redirectUrl(
-  "http://localhost:5173/payment-success"
+   .redirectUrl(
+  `${process.env.FRONTEND_URL}/payment-status?id=${merchantOrderId}`
 )
     .message("Codru Premium Plan")
     .build();
@@ -159,13 +163,10 @@ console.log("RESPONSE KEYS:", Object.keys(response));
 console.log("REDIRECT URL:", response.redirectUrl);
 
  res.status(200).json({
-
   success: true,
-
   redirectUrl: response.redirectUrl,
-
   orderId: response.orderId,
-
+  merchantOrderId,
 });
 
   } catch (error) {
@@ -189,6 +190,7 @@ console.log("REDIRECT URL:", response.redirectUrl);
 });
 
 router.get("/status/:orderId", async (req, res) => {
+  console.log("STATUS CHECK ORDER ID:", req.params.orderId);
 
   try {
 
@@ -292,12 +294,102 @@ router.get(
   }
 );
 
+router.post("/website-pay", async (req, res) => {
+
+  try {
+
+    const merchantOrderId =
+      "ORDER_" + Date.now();
+
+    const payRequest =
+      StandardCheckoutPayRequest
+        .builder()
+        .merchantOrderId(merchantOrderId)
+        .amount(50000)
+        .redirectUrl(
+          `${process.env.WEBSITE_FRONTEND_URL}/payment-status.html?id=${merchantOrderId}`
+        )
+        .message("One-on-One Doubt Session")
+        .build();
+
+    const response =
+      await phonepeClient.pay(payRequest);
+
+    res.json({
+      success: true,
+      redirectUrl: response.redirectUrl,
+      merchantOrderId
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      success: false
+    });
+
+  }
+
+});
+
 router.post("/webhook", async (req, res) => {
 
-  console.log("WEBHOOK RECEIVED");
-  console.log(req.body);
+  try {
 
-  res.status(200).send("OK");
+    console.log("WEBHOOK RECEIVED");
+    console.dir(req.body, { depth: null });
+
+    const { payload } = req.body;
+
+    const payment =
+      await Payment.findOne({
+        merchantOrderId:
+          payload.merchantOrderId
+      });
+
+    if (payment) {
+
+      if (
+        payload.state === "COMPLETED"
+      ) {
+
+        payment.status =
+          "Success";
+
+      } else {
+
+        payment.status =
+          "Failed";
+
+      }
+
+      await payment.save();
+
+      console.log(
+        "Payment Updated:",
+        payment.status
+      );
+
+    } else {
+
+      console.log(
+        "Payment Not Found"
+      );
+
+    }
+
+    res.status(200).send("OK");
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).send(
+      "Webhook Error"
+    );
+
+  }
 
 });
 module.exports = router;

@@ -12,11 +12,10 @@ const paymentSchema = new mongoose.Schema({
     required: true,
   },
 
-  status: {
-    type: String,
-    default: "Success",
-  },
-
+ status: {
+  type: String,
+  default: "Pending",
+},
   transactionId: {
     type: String,
     required: true,

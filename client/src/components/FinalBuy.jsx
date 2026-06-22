@@ -62,7 +62,7 @@ const FinalBuy = () => {
   console.log("Redirect URL:", response.data.redirectUrl);
 localStorage.setItem(
   "phonepeOrderId",
-  response.data.orderId
+  response.data.merchantOrderId
 );
   window.location.href =
     response.data.redirectUrl;
