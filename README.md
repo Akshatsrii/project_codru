@@ -1,11 +1,4 @@
 # Backend Deployment — Hetzner Cloud + Docker
-
-<p align="left">
-  <img src="https://www.docker.com/wp-content/uploads/2022/03/horizontal-logo-monochromatic-white.png" alt="Docker" height="40"/>
-  &nbsp;&nbsp;
-  <img src="https://www.hetzner.com/assets/Hetzner_CI/Hetzner-CI-Logo-SVG/Hetzner_Logo_schwarz.svg" alt="Hetzner" height="40"/>
-</p>
-
 Containerized the backend and deployed it on a Hetzner Cloud server (Ubuntu) with Nginx reverse proxy and SSL.
 
 ## ⚙️ Stack
