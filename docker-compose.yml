@@ -1,11 +1,4 @@
 services:
-  frontend:
-    build: ./client
-    container_name: frontend
-    ports:
-      - "3000:80"
-    restart: always
-
   backend:
     build: ./server
     container_name: backend
@@ -14,24 +7,3 @@ services:
     restart: always
     env_file:
       - ./server/.env
-    depends_on:
-      - mongodb
-
-  mail-service:
-    build: ./cute-mail-service
-    container_name: mail-service
-    ports:
-      - "5001:5001"
-    restart: always
-
-  mongodb:
-    image: mongo
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    restart: always
-    volumes:
-      - mongo_data:/data/db
-
-volumes:
-  mongo_data:
