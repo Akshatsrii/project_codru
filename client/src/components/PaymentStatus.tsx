@@ -32,19 +32,28 @@ const PaymentStatus = () => {
     img.src = logoUrl;
 
     // We wrap the PDF generation in the image onload so it waits for the logo to fetch
+    // We wrap the PDF generation in the image onload so it waits for the logo to fetch
     img.onload = () => {
-      // 2. Add Logo and Header Text
-      doc.addImage(img, "PNG", 15, 8, 28, 28); // x:15, y:8, width:28, height:28
+      // 🚨 DYNAMIC ASPECT RATIO FIX 🚨
+      const imgRatio = img.width / img.height;
+      const targetHeight = 26; // Set a fixed comfortable height
+      const targetWidth = targetHeight * imgRatio; // Let the width scale naturally
+
+      // 2. Add Logo (No more stretching!)
+      doc.addImage(img, "PNG", 15, 9, targetWidth, targetHeight);
+
+      // Dynamically push the text to the right based on how wide the logo is
+      const textStartX = 15 + targetWidth + 6; 
 
       doc.setFontSize(22);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(255, 255, 255); // White text over orange
-      doc.text("Curious Team Learning Pvt. Ltd.", 48, 22);
+      doc.text("Curious Team Learning Pvt. Ltd.", textStartX, 22);
 
       doc.setFontSize(12);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(255, 237, 213); // Soft orange-100 for subtext
-      doc.text("Official Transaction Receipt", 48, 30);
+      doc.text("Official Transaction Receipt", textStartX, 30);
 
       buildPdfBody(doc);
     };
