@@ -49,26 +49,22 @@ router.post("/create-order", async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid or inactive plan selected." });
     }
 
-    // 2. 🚨 GUEST CHECKOUT / USER RESOLUTION LOGIC 🚨
+    // 2. GUEST CHECKOUT / USER RESOLUTION LOGIC
     let actualUserId = userId;
     let userDoc = null;
 
-    // If no userId was sent from React, check if the email exists
     if (!actualUserId && email) {
       userDoc = await User.findOne({ email: email.toLowerCase() });
       if (userDoc) {
-        actualUserId = userDoc._id; // Attach to existing user
+        actualUserId = userDoc._id; 
       }
     }
 
-    // If still no user found, CREATE A NEW ONE
+    // CREATE A NEW USER IF NEEDED
     if (!actualUserId) {
-      // Generate a unique username (e.g., "johndoe8492")
       const baseUsername = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
       const randomSuffix = Math.floor(1000 + Math.random() * 9000);
       const generatedUsername = `${baseUsername}${randomSuffix}`;
-
-      // Generate a random temporary password
       const tempPassword = Math.random().toString(36).slice(-8) + "A1!";
 
       const newUser = new User({
@@ -128,21 +124,20 @@ router.post("/create-order", async (req, res) => {
 });
 
 // ==========================
-// 3. WEBHOOK (Server-to-Server callback) 🚨 RESTORED 🚨
+// 3. WEBHOOK (Server-to-Server callback)
 // ==========================
 router.post("/webhook", async (req, res) => {
   try {
     console.log("WEBHOOK RECEIVED");
     console.log("PHONEPE RAW WEBHOOK BODY:", JSON.stringify(req.body, null, 2));
     
-    // Depending on PhonePe's exact SDK response, the payload might be in req.body.response or req.body.payload
     const payloadBase64 = req.body.response; 
     let payload;
 
     if (payloadBase64) {
         // Decode the base64 payload from PhonePe
         const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
-        payload = JSON.parse(decodedPayload).data;
+        payload = JSON.parse(decodedPayload).data || JSON.parse(decodedPayload).payload;
     } else {
         payload = req.body.payload || req.body;
     }
@@ -158,21 +153,28 @@ router.post("/webhook", async (req, res) => {
       if (payload.state === "COMPLETED" || payload.code === "PAYMENT_SUCCESS") {
         order.status = "SUCCESS";
         
-        // 🚨 NEW: Smart Extraction
-        const inst = payload.paymentInstrument || {};
+        // 🚨 MAXIMUM DETAIL EXTRACTION 🚨
+        order.phonepeOrderId = payload.orderId || "N/A";
         
-        // Grab PhonePe's ID
-        order.phonepeTransactionId = payload.transactionId || "N/A"; 
-        
-        // Grab the Bank ID (Checks for UPI 'utr' first!)
-        order.bankReference = inst.utr || inst.bankTransactionId || inst.pgTransactionId || "N/A";
+        // Dig into the paymentDetails array
+        const pDetails = payload.paymentDetails && payload.paymentDetails.length > 0 ? payload.paymentDetails[0] : {};
+        order.paymentMode = pDetails.paymentMode || "UNKNOWN";
+        order.phonepeTransactionId = pDetails.transactionId || payload.transactionId || "N/A";
+
+        // Dig deeper into splitInstruments and rails for the UTR/Bank ID
+        const splitInst = pDetails.splitInstruments && pDetails.splitInstruments.length > 0 ? pDetails.splitInstruments[0] : {};
+        const rail = splitInst.rail || {};
+        const instrument = splitInst.instrument || {};
+
+        order.paymentInstrumentType = rail.type || instrument.type || "UNKNOWN";
+        order.bankReference = rail.utr || rail.bankTransactionId || instrument.bankTransactionId || "N/A";
 
         // Grant access
         await User.findByIdAndUpdate(order.userId, {
             $addToSet: { activePlans: order.planId }
         });
-        console.log(`Course ${order.planId} granted to User ${order.userId}`);
-
+        
+        console.log(`Order ${order.orderId} successfully captured with mode: ${order.paymentMode}`);
       } else {
         order.status = "FAILED";
       }
@@ -196,43 +198,47 @@ router.post("/webhook", async (req, res) => {
 // 4. CHECK STATUS (For the Payment Success Page)
 // ==========================
 router.get("/status/:orderId", async (req, res) => {
+  console.log("STATUS CHECK ORDER ID:", req.params.orderId);
+
   try {
     const { orderId } = req.params;
+
+    // Call PhonePe to get the absolute truth of the transaction
     const statusResponse = await phonepeClient.getOrderStatus(orderId);
+    console.log("PHONEPE RAW STATUS:", JSON.stringify(statusResponse, null, 2));
+
     const order = await Order.findOne({ orderId: orderId });
 
     if (order) {
-      // 🚨 NEW LOGIC: Always aggressively grab the ID if we don't have it yet!
-      const actualTxnId = 
-        statusResponse.transactionId || 
-        (statusResponse.data && statusResponse.data.transactionId) || 
-        "TXN_NOT_PROVIDED";
-
       if (statusResponse.state === "COMPLETED") {
         order.status = "SUCCESS";
         
-        // 1. Convert the entire response to a string or look flatly
-        const dataObj = statusResponse.data || {};
+        const dataObj = statusResponse.data || statusResponse || {};
         
-        // 2. Heavy extraction fallback chain
-        const finalPhonePeId = 
-          statusResponse.transactionId || 
-          dataObj.transactionId || 
-          statusResponse.merchantTransactionId ||
-          dataObj.merchantTransactionId ||
-          "N/A";
+        // Save PhonePe Order ID
+        if (!order.phonepeOrderId) order.phonepeOrderId = dataObj.orderId || "N/A";
 
-        const finalBankRef = 
-          dataObj.paymentInstrument?.utr || 
-          dataObj.paymentInstrument?.bankTransactionId || 
-          dataObj.paymentInstrument?.pgTransactionId || 
-          statusResponse.paymentInstrument?.bankTransactionId ||
-          "N/A";
+        // Extract deep data (Covering both Webhook structure & Status structure)
+        const pDetails = dataObj.paymentDetails && dataObj.paymentDetails.length > 0 ? dataObj.paymentDetails[0] : {};
+        const splitInst = pDetails.splitInstruments && pDetails.splitInstruments.length > 0 ? pDetails.splitInstruments[0] : {};
+        const rail = splitInst.rail || {};
+        const instrument = splitInst.instrument || dataObj.paymentInstrument || {};
 
-        // 3. If Bank reference is N/A, use the PhonePe system ID as a fallback for the receipt
-        order.phonepeTransactionId = finalPhonePeId;
-        order.bankReference = finalBankRef !== "N/A" ? finalBankRef : finalPhonePeId;
+        if (!order.phonepeTransactionId || order.phonepeTransactionId === "N/A") {
+            order.phonepeTransactionId = pDetails.transactionId || dataObj.transactionId || "N/A";
+        }
+        if (!order.paymentMode || order.paymentMode === "UNKNOWN") {
+            order.paymentMode = pDetails.paymentMode || instrument.type || "UNKNOWN";
+        }
+        if (!order.paymentInstrumentType || order.paymentInstrumentType === "UNKNOWN") {
+            order.paymentInstrumentType = rail.type || instrument.type || "UNKNOWN";
+        }
+        if (!order.bankReference || order.bankReference === "N/A") {
+            // Ultimate fallback chain
+            order.bankReference = rail.utr || rail.bankTransactionId || instrument.utr || instrument.bankTransactionId || instrument.pgTransactionId || order.phonepeTransactionId;
+        }
 
+        // Grant access (in case webhook was delayed)
         await User.findByIdAndUpdate(order.userId, {
             $addToSet: { activePlans: order.planId }
         });
@@ -257,7 +263,7 @@ router.get("/status/:orderId", async (req, res) => {
 });
 
 // ==========================
-// 5. GET ALL PAYMENTS (Admin Dashboard) 🚨 RESTORED 🚨
+// 5. GET ALL PAYMENTS (Admin Dashboard)
 // ==========================
 router.get("/all-payments", async (req, res) => {
   try {
@@ -268,110 +274,5 @@ router.get("/all-payments", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch payments" });
   }
 });
-
-// ==========================
-// TEMPORARY ROUTE: SEED PLANS (Commented out for safety)
-// ==========================
-// router.get("/seed-plans", async (req, res) => {
-//   try {
-//     const plansToSeed = [
-//       {
-//         planId: "learning-exploration",
-//         name: "Learning Exploration",
-//         description: "Explore our Tools & Community",
-//         billingCycle: "MONTHLY",
-//         price: 0,
-//         originalPrice: 0,
-//         features: [
-//           "Access to CuTe Tools & Community",
-//           "5 Days Demo of 1 on 1 classes"
-//         ],
-//         isActive: true,
-//         tag: null
-//       },
-//       {
-//         planId: "doubt-session",
-//         name: "Doubt Session",
-//         description: "Topic-specific Support",
-//         billingCycle: "ONE_TIME", // Because it is per class
-//         price: 500,
-//         originalPrice: 900,
-//         features: [
-//           "Access to CuTe Tools & Community",
-//           "1 on 1 class (1 hour class)"
-//         ],
-//         isActive: true,
-//         tag: null
-//       },
-//       {
-//         planId: "self-study-support-monthly",
-//         name: "Self Study Support",
-//         description: "Small Group Focus",
-//         billingCycle: "MONTHLY",
-//         price: 3500,
-//         originalPrice: 5000,
-//         features: [
-//           "Access to CuTe Tools & Community",
-//           "Class of 5 students (Max)",
-//           "Mentorship & Guidance",
-//           "Collaborative Learning"
-//         ],
-//         isActive: true,
-//         tag: null
-//       },
-//       {
-//         planId: "subject-mastery-monthly",
-//         name: "Subject Mastery",
-//         description: "Deep Focus on 1 Area",
-//         billingCycle: "MONTHLY",
-//         price: 10000,
-//         originalPrice: 18000,
-//         features: [
-//           "Access to CuTe Tools & Community",
-//           "1 on 1 class (Upto 1:30 hour)",
-//           "Mentorship & Guidance",
-//           "Performance Report"
-//         ],
-//         isActive: true,
-//         tag: "Best Seller"
-//       },
-//       {
-//         planId: "homeschooling-bundle-monthly",
-//         name: "Complete Homeschooling Bundle",
-//         description: "All Subjects + Skills",
-//         billingCycle: "MONTHLY",
-//         price: 30000,
-//         originalPrice: 54000,
-//         features: [
-//           "Access to CuTe Tools & Community",
-//           "1 on 1 class (Up to 3 hours class)",
-//           "Multiple Mentors & Experts",
-//           "Collaborative Learning",
-//           "Overall Performance Report",
-//           "Skill Development Courses",
-//           "Practical Hands-on Kits"
-//         ],
-//         isActive: true,
-//         tag: "Best Value"
-//       }
-//     ];
-
-//     // Loop through and upsert (Update if exists, Insert if it doesn't)
-//     for (const planData of plansToSeed) {
-//       await Plan.findOneAndUpdate(
-//         { planId: planData.planId }, // Find by planId
-//         { $set: planData },          // Update with these details
-//         { upsert: true, new: true }  // Create if missing
-//       );
-//     }
-
-//     console.log("Database Seeded with Plans!");
-//     res.status(200).json({ success: true, message: "Plans successfully loaded into MongoDB!" });
-
-//   } catch (error) {
-//     console.error("Seeding Error:", error);
-//     res.status(500).json({ success: false, message: "Failed to seed database", error: error.message });
-//   }
-// });
 
 module.exports = router;
