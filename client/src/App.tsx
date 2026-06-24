@@ -31,6 +31,7 @@ import PaymentHistory from "./components/PaymentHistory";
 import PaymentFailed from "./components/PaymentFailed";
 import PaymentCancelled from "./components/PaymentCancelled";
 import PaymentStatus from "./components/PaymentStatus";
+import EnrollPage from "./components/Enrol";
 
 // --- TYPESCRIPT DEFINITIONS ---
 export interface UserData {
@@ -617,34 +618,26 @@ function App() {
 
             {/* PAYMENT SUCCESS */}
             <Route
-              path="/payment-success"
-              element={<PaymentSuccess />}
+              path="/payment-status" // Note: PhonePe is currently configured to redirect to this URL
+              element={<PaymentStatus />}
+            />
+                        {/* FINAL BUY */}
+                        <Route
+                          path="/finalBuy"
+                          element={<FinalBuy />}
+                        />
+
+                        {/* PAYMENT HISTORY */}
+            <Route
+              path="/payment-history"
+              element={<PaymentHistory />}
             />
 
+            {/* ENROLLMENT PAGE */}
             <Route
-  path="/payment-failed"
-  element={<PaymentFailed />}
-/>
-
-<Route
-  path="/payment-cancelled"
-  element={<PaymentCancelled />}
-/>
-<Route
-  path="/payment-status"
-  element={<PaymentStatus />}
-/>
-            {/* FINAL BUY */}
-            <Route
-              path="/finalBuy"
-              element={<FinalBuy />}
+              path="/enroll"
+              element={<EnrollPage />}
             />
-
-            {/* PAYMENT HISTORY */}
-<Route
-  path="/payment-history"
-  element={<PaymentHistory />}
-/>
 
             {/* NOT FOUND */}
             <Route

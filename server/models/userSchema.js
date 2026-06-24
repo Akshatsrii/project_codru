@@ -75,6 +75,8 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: "Syllabus" 
   }],
+  activePlans: [{ type: String }], // Stores planIds like 'doubt-session'
+  
   tasks: [{
     week: String,
     question: String,
