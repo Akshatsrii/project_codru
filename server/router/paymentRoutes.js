@@ -156,18 +156,25 @@ router.post("/webhook", async (req, res) => {
         // 🚨 MAXIMUM DETAIL EXTRACTION 🚨
         order.phonepeOrderId = payload.orderId || "N/A";
         
-        // Dig into the paymentDetails array
         const pDetails = payload.paymentDetails && payload.paymentDetails.length > 0 ? payload.paymentDetails[0] : {};
         order.paymentMode = pDetails.paymentMode || "UNKNOWN";
         order.phonepeTransactionId = pDetails.transactionId || payload.transactionId || "N/A";
 
-        // Dig deeper into splitInstruments and rails for the UTR/Bank ID
         const splitInst = pDetails.splitInstruments && pDetails.splitInstruments.length > 0 ? pDetails.splitInstruments[0] : {};
         const rail = splitInst.rail || {};
         const instrument = splitInst.instrument || {};
 
         order.paymentInstrumentType = rail.type || instrument.type || "UNKNOWN";
-        order.bankReference = rail.utr || rail.bankTransactionId || instrument.bankTransactionId || "N/A";
+        
+        // Grab the extra details
+        order.vpa = rail.vpa !== "<vpa>" ? rail.vpa : "N/A";
+        order.accountType = instrument.accountType || "N/A";
+        order.ifsc = instrument.ifsc || "N/A";
+
+        // Sandbox clean-up for UTR
+        let extractedUtr = rail.utr || rail.bankTransactionId || instrument.bankTransactionId || "N/A";
+        if (extractedUtr === "<utr>") extractedUtr = order.phonepeTransactionId; // Replace fake string with PhonePe ID
+        order.bankReference = extractedUtr;
 
         // Grant access
         await User.findByIdAndUpdate(order.userId, {
@@ -213,12 +220,10 @@ router.get("/status/:orderId", async (req, res) => {
       if (statusResponse.state === "COMPLETED") {
         order.status = "SUCCESS";
         
+        // 🚨 MAXIMUM DETAIL EXTRACTION 🚨
         const dataObj = statusResponse.data || statusResponse || {};
-        
-        // Save PhonePe Order ID
         if (!order.phonepeOrderId) order.phonepeOrderId = dataObj.orderId || "N/A";
 
-        // Extract deep data (Covering both Webhook structure & Status structure)
         const pDetails = dataObj.paymentDetails && dataObj.paymentDetails.length > 0 ? dataObj.paymentDetails[0] : {};
         const splitInst = pDetails.splitInstruments && pDetails.splitInstruments.length > 0 ? pDetails.splitInstruments[0] : {};
         const rail = splitInst.rail || {};
@@ -233,9 +238,16 @@ router.get("/status/:orderId", async (req, res) => {
         if (!order.paymentInstrumentType || order.paymentInstrumentType === "UNKNOWN") {
             order.paymentInstrumentType = rail.type || instrument.type || "UNKNOWN";
         }
+        
+        // Extra details
+        if (!order.vpa || order.vpa === "N/A") order.vpa = rail.vpa !== "<vpa>" ? rail.vpa : "N/A";
+        if (!order.accountType || order.accountType === "N/A") order.accountType = instrument.accountType || "N/A";
+        if (!order.ifsc || order.ifsc === "N/A") order.ifsc = instrument.ifsc || "N/A";
+
         if (!order.bankReference || order.bankReference === "N/A") {
-            // Ultimate fallback chain
-            order.bankReference = rail.utr || rail.bankTransactionId || instrument.utr || instrument.bankTransactionId || instrument.pgTransactionId || order.phonepeTransactionId;
+            let extractedUtr = rail.utr || rail.bankTransactionId || instrument.utr || instrument.bankTransactionId || instrument.pgTransactionId || order.phonepeTransactionId;
+            if (extractedUtr === "<utr>") extractedUtr = order.phonepeTransactionId;
+            order.bankReference = extractedUtr;
         }
 
         // Grant access (in case webhook was delayed)

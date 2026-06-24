@@ -1,20 +1,25 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    orderId: { type: String, required: true, unique: true }, // Your ORDER_178...
+    orderId: { type: String, required: true, unique: true }, 
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     planId: { type: String, required: true },
     amount: { type: Number, required: true },
     status: { type: String, enum: ['PENDING', 'SUCCESS', 'FAILED'], default: 'PENDING' },
     
-    // 🚨 NEW: Upgraded Financial Tracking Fields 🚨
-    phonepeOrderId: { type: String },       // Their OMO... ID
-    phonepeTransactionId: { type: String }, // Their OM260... ID
-    bankReference: { type: String },        // UTR or Bank Txn ID
-    paymentMode: { type: String },          // e.g., "UPI_QR", "NETBANKING"
-    paymentInstrumentType: { type: String },// e.g., "UPI", "ACCOUNT", "CARD"
+    // Core Transaction IDs
+    phonepeOrderId: { type: String },       
+    phonepeTransactionId: { type: String }, 
+    bankReference: { type: String },        
     
-    // Snapshot of user details
+    // 🚨 MAX DETAIL: New Financial Fields 🚨
+    paymentMode: { type: String },          // e.g., "UPI_QR"
+    paymentInstrumentType: { type: String },// e.g., "UPI", "ACCOUNT"
+    vpa: { type: String },                  // UPI ID (e.g., user@ybl)
+    accountType: { type: String },          // e.g., "SAVINGS"
+    ifsc: { type: String },                 // e.g., "BKID0000508"
+    
+    // User Snapshot
     studentName: { type: String, required: true },
     email: { type: String, required: true },
     phone: { type: String, required: true },

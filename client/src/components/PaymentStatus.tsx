@@ -18,79 +18,109 @@ const PaymentStatus = () => {
   // ==========================================
   const generateReceipt = (data: any, currentStatus: string) => {
     const doc = new jsPDF();
+
+    // 1. Create the Full Brand-Orange Header Bar
+    // Using Tailwind orange-600 RGB (234, 88, 12)
+    doc.setFillColor(234, 88, 12); 
+    doc.rect(0, 0, 210, 45, "F"); // 210mm is full A4 width
+
+    // Define the Cloudinary URL (swapped to .png for jsPDF compatibility)
+    const logoUrl = "https://res.cloudinary.com/da6jhcsmm/image/upload/v1772999280/logo_no_bg1_mfmk8x.png";
     
-    // 1. Brand Header
-    doc.setFontSize(22);
-    doc.setTextColor(30, 58, 138); // Brand-blue alignment
-    doc.text("CuTe Learning", 105, 20, { align: "center" });
-    
-    doc.setFontSize(12);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Official Transaction Receipt", 105, 28, { align: "center" });
+    const img = new Image();
+    img.crossOrigin = "Anonymous"; // Prevents CORS blocking
+    img.src = logoUrl;
 
-    // 2. Divider Line
-    doc.setDrawColor(200, 200, 200);
-    doc.line(20, 35, 190, 35);
+    // We wrap the PDF generation in the image onload so it waits for the logo to fetch
+    img.onload = () => {
+      // 2. Add Logo and Header Text
+      doc.addImage(img, "PNG", 15, 8, 28, 28); // x:15, y:8, width:28, height:28
 
-    // 3. Status Badge Logic (Colors for PDF)
-    if (currentStatus === "COMPLETED") {
-      doc.setTextColor(21, 128, 61); // Green
-    } else if (currentStatus === "FAILED" || currentStatus === "CANCELLED") {
-      doc.setTextColor(220, 38, 38); // Red
-    } else {
-      doc.setTextColor(234, 88, 12); // Orange
-    }
-    doc.setFontSize(16);
-    doc.text(`STATUS: ${currentStatus}`, 105, 45, { align: "center" });
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(255, 255, 255); // White text over orange
+      doc.text("Curious Team Learning Pvt. Ltd.", 48, 22);
 
-    // 4. Order Details
-    doc.setTextColor(30, 30, 30);
-    doc.setFontSize(11);
-    let yPos = 60;
-    const lineHeight = 10;
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(255, 237, 213); // Soft orange-100 for subtext
+      doc.text("Official Transaction Receipt", 48, 30);
 
-    doc.text(`Order ID:`, 20, yPos);
-    doc.setFont("helvetica", "bold");
-    doc.text(`${data?.orderId || orderId}`, 60, yPos);
-    doc.setFont("helvetica", "normal");
-    yPos += lineHeight;
+      buildPdfBody(doc);
+    };
 
-    doc.text(`Date:`, 20, yPos);
-    doc.text(`${new Date(data?.createdAt || Date.now()).toLocaleString()}`, 60, yPos);
-    yPos += lineHeight;
+    // Fallback just in case the user's network blocks the image
+    img.onerror = () => {
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(255, 255, 255);
+      doc.text("Curious Team Learning Pvt. Ltd.", 105, 22, { align: "center" });
 
-    doc.text(`Student Name:`, 20, yPos);
-    doc.text(`${data?.studentName || 'N/A'}`, 60, yPos);
-    yPos += lineHeight;
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(255, 237, 213);
+      doc.text("Official Transaction Receipt", 105, 30, { align: "center" });
 
-    doc.text(`Plan Selected:`, 20, yPos);
-    doc.text(`${data?.planId ? data.planId.replace(/-/g, ' ').toUpperCase() : 'N/A'}`, 60, yPos);
-    yPos += lineHeight;
+      buildPdfBody(doc);
+    };
 
-    doc.text(`Amount:`, 20, yPos);
-    doc.setFont("helvetica", "bold");
-    doc.text(`INR ${data?.amount || '0'}`, 60, yPos);
-    doc.setFont("helvetica", "normal");
-    yPos += lineHeight;
+    // Helper function for the rest of the PDF body
+    const buildPdfBody = (doc: jsPDF) => {
+      // 3. Status Badge Logic
+      if (currentStatus === "COMPLETED") {
+        doc.setTextColor(21, 128, 61); // Green
+      } else if (currentStatus === "FAILED" || currentStatus === "CANCELLED") {
+        doc.setTextColor(220, 38, 38); // Red
+      } else {
+        doc.setTextColor(234, 88, 12); // Orange
+      }
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text(`STATUS: ${currentStatus}`, 105, 60, { align: "center" });
 
-    // Smart identification mapping inside PDF layout
-    const displayTxnId = data?.bankReference || data?.phonepeTransactionId;
-    if (displayTxnId && displayTxnId !== "N/A" && displayTxnId !== "TXN_NOT_PROVIDED") {
-      doc.text(`Bank Txn ID:`, 20, yPos);
-      doc.text(`${displayTxnId}`, 60, yPos);
-      yPos += lineHeight;
-    }
+      // 4. Order Details Section
+      doc.setTextColor(30, 30, 30);
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      
+      let yPos = 75; // Shifted down to account for the bigger header
+      const lineHeight = 10;
 
-    // 5. Footer
-    doc.setDrawColor(200, 200, 200);
-    doc.line(20, yPos + 10, 190, yPos + 10);
-    
-    doc.setFontSize(9);
-    doc.setTextColor(150, 150, 150);
-    doc.text("If you have any questions regarding this transaction, please contact our support.", 105, yPos + 20, { align: "center" });
+      const addDetail = (label: string, value: string, isBold = false) => {
+        doc.text(label, 20, yPos);
+        if (isBold) doc.setFont("helvetica", "bold");
+        doc.text(value, 60, yPos);
+        if (isBold) doc.setFont("helvetica", "normal");
+        yPos += lineHeight;
+      };
 
-    // 6. Trigger Download
-    doc.save(`CuTe_Receipt_${data?.orderId || orderId}.pdf`);
+      addDetail(`Order ID:`, `${data?.orderId || orderId}`, true);
+      addDetail(`Date:`, `${new Date(data?.createdAt || Date.now()).toLocaleString()}`);
+      addDetail(`Student Name:`, `${data?.studentName || 'N/A'}`);
+      addDetail(`Plan Selected:`, `${data?.planId ? data.planId.replace(/-/g, ' ').toUpperCase() : 'N/A'}`);
+      
+      if (data?.paymentMode && data.paymentMode !== "UNKNOWN") {
+          addDetail(`Payment Mode:`, `${data.paymentMode.replace(/_/g, ' ')}`);
+      }
+
+      addDetail(`Amount:`, `INR ${data?.amount || '0'}`, true);
+
+      const displayTxnId = data?.bankReference || data?.phonepeTransactionId;
+      if (displayTxnId && displayTxnId !== "N/A" && displayTxnId !== "TXN_NOT_PROVIDED") {
+          addDetail(`Bank Txn ID:`, `${displayTxnId}`);
+      }
+
+      // 5. Footer
+      doc.setDrawColor(200, 200, 200);
+      doc.line(20, yPos + 10, 190, yPos + 10);
+      
+      doc.setFontSize(9);
+      doc.setTextColor(150, 150, 150);
+      doc.text("If you have any questions regarding this transaction, please contact our support.", 105, yPos + 20, { align: "center" });
+
+      // 6. Trigger Download
+      doc.save(`CuTe_Receipt_${data?.orderId || orderId}.pdf`);
+    };
   };
 
   useEffect(() => {
