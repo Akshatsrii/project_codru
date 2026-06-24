@@ -157,8 +157,14 @@ router.post("/webhook", async (req, res) => {
       if (payload.state === "COMPLETED" || payload.code === "PAYMENT_SUCCESS") {
         order.status = "SUCCESS";
         
-        // Ensure we grab the ID safely
-        order.phonepeTransactionId = payload.transactionId || "TXN_NOT_PROVIDED"; 
+        // 🚨 NEW: Smart Extraction
+        const inst = payload.paymentInstrument || {};
+        
+        // Grab PhonePe's ID
+        order.phonepeTransactionId = payload.transactionId || "N/A"; 
+        
+        // Grab the Bank ID (Checks for UPI 'utr' first!)
+        order.bankReference = inst.utr || inst.bankTransactionId || inst.pgTransactionId || "N/A";
 
         // Grant access
         await User.findByIdAndUpdate(order.userId, {
@@ -204,16 +210,22 @@ router.get("/status/:orderId", async (req, res) => {
       if (statusResponse.state === "COMPLETED") {
         order.status = "SUCCESS";
         
-        // Save the ID if it's missing (fixes the race condition!)
-        if (!order.phonepeTransactionId || order.phonepeTransactionId === "TXN_NOT_PROVIDED") {
-           order.phonepeTransactionId = actualTxnId;
+        // 🚨 NEW: Smart Extraction for the SDK response
+        const dataObj = statusResponse.data || statusResponse || {};
+        const inst = dataObj.paymentInstrument || {};
+
+        if (!order.phonepeTransactionId || order.phonepeTransactionId === "N/A" || order.phonepeTransactionId === "TXN_NOT_PROVIDED") {
+            order.phonepeTransactionId = dataObj.transactionId || "N/A";
+        }
+        
+        if (!order.bankReference || order.bankReference === "N/A") {
+            order.bankReference = inst.utr || inst.bankTransactionId || inst.pgTransactionId || "N/A";
         }
 
-        // Ensure access is granted 
         await User.findByIdAndUpdate(order.userId, {
             $addToSet: { activePlans: order.planId }
         });
-        
+
         await order.save();
       } else if (statusResponse.state === "FAILED") {
         order.status = "FAILED";

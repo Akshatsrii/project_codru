@@ -7,6 +7,7 @@ const orderSchema = new mongoose.Schema({
     amount: { type: Number, required: true },
     status: { type: String, enum: ['PENDING', 'SUCCESS', 'FAILED'], default: 'PENDING' },
     phonepeTransactionId: { type: String }, // Populated by the webhook later
+    bankReference: { type: String },
     
     // Snapshot of user details at the exact time of purchase
     studentName: { type: String, required: true },
