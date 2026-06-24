@@ -133,6 +133,7 @@ router.post("/create-order", async (req, res) => {
 router.post("/webhook", async (req, res) => {
   try {
     console.log("WEBHOOK RECEIVED");
+    console.log("PHONEPE RAW WEBHOOK BODY:", JSON.stringify(req.body, null, 2));
     
     // Depending on PhonePe's exact SDK response, the payload might be in req.body.response or req.body.payload
     const payloadBase64 = req.body.response; 
