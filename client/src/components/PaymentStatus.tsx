@@ -21,7 +21,7 @@ const PaymentStatus = () => {
     
     // 1. Brand Header
     doc.setFontSize(22);
-    doc.setTextColor(30, 58, 138); // Approximate brand-blue
+    doc.setTextColor(30, 58, 138); // Brand-blue alignment
     doc.text("CuTe Learning", 105, 20, { align: "center" });
     
     doc.setFontSize(12);
@@ -56,7 +56,7 @@ const PaymentStatus = () => {
     yPos += lineHeight;
 
     doc.text(`Date:`, 20, yPos);
-    doc.text(`${new Date().toLocaleString()}`, 60, yPos);
+    doc.text(`${new Date(data?.createdAt || Date.now()).toLocaleString()}`, 60, yPos);
     yPos += lineHeight;
 
     doc.text(`Student Name:`, 20, yPos);
@@ -73,9 +73,11 @@ const PaymentStatus = () => {
     doc.setFont("helvetica", "normal");
     yPos += lineHeight;
 
-    if (data?.phonepeTransactionId) {
+    // Smart identification mapping inside PDF layout
+    const displayTxnId = data?.bankReference || data?.phonepeTransactionId;
+    if (displayTxnId && displayTxnId !== "N/A" && displayTxnId !== "TXN_NOT_PROVIDED") {
       doc.text(`Bank Txn ID:`, 20, yPos);
-      doc.text(`${data.phonepeTransactionId}`, 60, yPos);
+      doc.text(`${displayTxnId}`, 60, yPos);
       yPos += lineHeight;
     }
 
@@ -110,7 +112,7 @@ const PaymentStatus = () => {
           setStatus(data.state); 
           setOrderDetails(data.order);
 
-          // 🚨 TRIGGER AUTO DOWNLOAD ONCE 🚨
+          // TRIGGER AUTO DOWNLOAD ONCE
           if (!hasDownloadedRef.current) {
             generateReceipt(data.order, data.state);
             hasDownloadedRef.current = true;
@@ -131,6 +133,9 @@ const PaymentStatus = () => {
 
     setTimeout(checkStatus, 1500);
   }, [orderId]);
+
+  // Extract clean ID token for rendering visibility
+  const currentBankTxnId = orderDetails?.bankReference || orderDetails?.phonepeTransactionId;
 
   // ==========================================
   // UI: LOADING STATE
@@ -161,18 +166,47 @@ const PaymentStatus = () => {
         <h1 className="text-4xl md:text-5xl font-extrabold text-brand-blue mb-4 text-center">Welcome to the Team!</h1>
         
         <p className="text-lg text-gray-600 mb-8 max-w-lg text-center">
-          Your payment was successful. We have unlocked the curriculum in your dashboard! A receipt has been downloaded automatically.
+          Your payment was processed successfully. We have unlocked the curriculum in your dashboard!
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <Link to="/dashboard" className="px-8 py-4 bg-brand-orange text-white font-bold rounded-full hover:bg-orange-600 transition-all shadow-lg hover:-translate-y-1 text-center">
+        {/* Visual Summary Block */}
+        <div className="bg-white border border-gray-100 rounded-3xl p-6 w-full max-w-md mb-8 shadow-md">
+          <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-50 pb-2">Order Summary</h3>
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Order ID</span>
+              <span className="font-bold text-gray-900 font-mono">{orderId}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Student Name</span>
+              <span className="font-bold text-gray-900">{orderDetails?.studentName || "N/A"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Plan Selected</span>
+              <span className="font-bold text-brand-blue capitalize">{orderDetails?.planId ? orderDetails.planId.replace(/-/g, ' ') : "N/A"}</span>
+            </div>
+            {currentBankTxnId && currentBankTxnId !== "N/A" && currentBankTxnId !== "TXN_NOT_PROVIDED" && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">Bank Txn ID</span>
+                <span className="font-bold text-gray-700 font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">{currentBankTxnId}</span>
+              </div>
+            )}
+            <div className="pt-3 border-t border-dashed border-gray-100 flex justify-between items-center text-base">
+              <span className="font-bold text-gray-900">Amount Paid</span>
+              <span className="text-xl font-black text-brand-orange">₹{orderDetails?.amount || 0}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
+          <Link to="/dashboard" className="px-8 py-4 bg-brand-orange text-white font-bold rounded-full hover:bg-orange-600 transition-all shadow-lg hover:-translate-y-1 text-center flex-1">
             Go to Dashboard
           </Link>
           <button 
             onClick={() => generateReceipt(orderDetails, status)}
-            className="px-8 py-4 bg-white border-2 border-brand-blue text-brand-blue font-bold rounded-full hover:bg-brand-blue hover:text-white transition-all shadow-sm flex justify-center items-center gap-2">
+            className="px-8 py-4 bg-white border-2 border-brand-blue text-brand-blue font-bold rounded-full hover:bg-brand-blue hover:text-white transition-all shadow-sm flex justify-center items-center gap-2 flex-1">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Download Receipt Again
+            Receipt PDF
           </button>
         </div>
       </div>
@@ -193,21 +227,44 @@ const PaymentStatus = () => {
       </span>
       <h1 className="text-4xl md:text-5xl font-extrabold text-brand-blue mb-4">Oops, something went wrong.</h1>
       
-      <p className="text-lg text-gray-600 mb-8 max-w-lg">
+      <p className="text-lg text-gray-600 mb-6 max-w-lg">
         {status === "CANCELLED" 
           ? "You cancelled the payment process. Your account has not been charged."
           : "We couldn't process your payment. If money was deducted, it will be refunded by your bank within 3-5 business days."}
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <Link to="/enroll" className="px-8 py-4 bg-brand-blue text-white font-bold rounded-full hover:bg-blue-800 transition-all shadow-lg hover:-translate-y-1">
+      {/* On-screen details context for Error States */}
+      <div className="bg-white border border-gray-100 rounded-3xl p-5 w-full max-w-md mb-8 text-left shadow-sm">
+        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Reference Information</h3>
+        <div className="space-y-2 text-xs font-medium">
+          <div className="flex justify-between">
+            <span className="text-gray-400">Order Reference</span>
+            <span className="font-mono text-gray-900 font-bold">{orderId}</span>
+          </div>
+          {orderDetails?.studentName && (
+            <div className="flex justify-between">
+              <span className="text-gray-400">Student Profile</span>
+              <span className="text-gray-900 font-bold">{orderDetails.studentName}</span>
+            </div>
+          )}
+          {orderDetails?.amount && (
+            <div className="flex justify-between">
+              <span className="text-gray-400">Attempted Amount</span>
+              <span className="text-gray-900 font-bold">₹{orderDetails.amount}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
+        <Link to="/enroll" className="px-8 py-4 bg-brand-blue text-white font-bold rounded-full hover:bg-blue-800 transition-all shadow-lg hover:-translate-y-1 text-center flex-1">
           Try Again
         </Link>
         <button 
             onClick={() => generateReceipt(orderDetails || { orderId: orderId }, status)}
-            className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 font-bold rounded-full hover:bg-gray-50 transition-all shadow-sm flex justify-center items-center gap-2">
+            className="px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 font-bold rounded-full hover:bg-gray-50 transition-all shadow-sm flex justify-center items-center gap-2 flex-1">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Save Error Receipt
+            Save PDF Report
         </button>
       </div>
     </div>

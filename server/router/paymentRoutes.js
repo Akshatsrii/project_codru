@@ -210,17 +210,27 @@ router.get("/status/:orderId", async (req, res) => {
       if (statusResponse.state === "COMPLETED") {
         order.status = "SUCCESS";
         
-        // 🚨 NEW: Smart Extraction for the SDK response
-        const dataObj = statusResponse.data || statusResponse || {};
-        const inst = dataObj.paymentInstrument || {};
-
-        if (!order.phonepeTransactionId || order.phonepeTransactionId === "N/A" || order.phonepeTransactionId === "TXN_NOT_PROVIDED") {
-            order.phonepeTransactionId = dataObj.transactionId || "N/A";
-        }
+        // 1. Convert the entire response to a string or look flatly
+        const dataObj = statusResponse.data || {};
         
-        if (!order.bankReference || order.bankReference === "N/A") {
-            order.bankReference = inst.utr || inst.bankTransactionId || inst.pgTransactionId || "N/A";
-        }
+        // 2. Heavy extraction fallback chain
+        const finalPhonePeId = 
+          statusResponse.transactionId || 
+          dataObj.transactionId || 
+          statusResponse.merchantTransactionId ||
+          dataObj.merchantTransactionId ||
+          "N/A";
+
+        const finalBankRef = 
+          dataObj.paymentInstrument?.utr || 
+          dataObj.paymentInstrument?.bankTransactionId || 
+          dataObj.paymentInstrument?.pgTransactionId || 
+          statusResponse.paymentInstrument?.bankTransactionId ||
+          "N/A";
+
+        // 3. If Bank reference is N/A, use the PhonePe system ID as a fallback for the receipt
+        order.phonepeTransactionId = finalPhonePeId;
+        order.bankReference = finalBankRef !== "N/A" ? finalBankRef : finalPhonePeId;
 
         await User.findByIdAndUpdate(order.userId, {
             $addToSet: { activePlans: order.planId }
