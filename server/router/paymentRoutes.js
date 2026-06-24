@@ -155,16 +155,15 @@ router.post("/webhook", async (req, res) => {
 
     if (order) {
       if (payload.state === "COMPLETED" || payload.code === "PAYMENT_SUCCESS") {
-        
-        // 1. Mark order as success
         order.status = "SUCCESS";
-        order.phonepeTransactionId = payload.transactionId; 
-
-        // 2. 🚨 GRANT COURSE ACCESS TO THE USER 🚨
-        await User.findByIdAndUpdate(order.userId, {
-            $addToSet: { activePlans: order.planId } // $addToSet prevents duplicates
-        });
         
+        // Ensure we grab the ID safely
+        order.phonepeTransactionId = payload.transactionId || "TXN_NOT_PROVIDED"; 
+
+        // Grant access
+        await User.findByIdAndUpdate(order.userId, {
+            $addToSet: { activePlans: order.planId }
+        });
         console.log(`Course ${order.planId} granted to User ${order.userId}`);
 
       } else {
@@ -190,35 +189,32 @@ router.post("/webhook", async (req, res) => {
 // 4. CHECK STATUS (For the Payment Success Page)
 // ==========================
 router.get("/status/:orderId", async (req, res) => {
-  console.log("STATUS CHECK ORDER ID:", req.params.orderId);
-
   try {
     const { orderId } = req.params;
-
-    // Call PhonePe to get the absolute truth of the transaction
     const statusResponse = await phonepeClient.getOrderStatus(orderId);
-    
-    // Sync our database just in case the webhook was delayed
     const order = await Order.findOne({ orderId: orderId });
 
-    if (order && order.status === "PENDING") {
+    if (order) {
+      // 🚨 NEW LOGIC: Always aggressively grab the ID if we don't have it yet!
+      const actualTxnId = 
+        statusResponse.transactionId || 
+        (statusResponse.data && statusResponse.data.transactionId) || 
+        "TXN_NOT_PROVIDED";
+
       if (statusResponse.state === "COMPLETED") {
-        
-        // 1. Mark as Success
         order.status = "SUCCESS";
         
-        // 🚨 ADD THIS LINE: Grab the Transaction ID from the status check! 🚨
-        // (We use an OR fallback just in case the SDK wraps it inside a 'data' object)
-        order.phonepeTransactionId = statusResponse.transactionId || (statusResponse.data && statusResponse.data.transactionId) || "TXN_NOT_PROVIDED";
+        // Save the ID if it's missing (fixes the race condition!)
+        if (!order.phonepeTransactionId || order.phonepeTransactionId === "TXN_NOT_PROVIDED") {
+           order.phonepeTransactionId = actualTxnId;
+        }
 
-        // 2. Ensure access is granted if webhook missed it
+        // Ensure access is granted 
         await User.findByIdAndUpdate(order.userId, {
             $addToSet: { activePlans: order.planId }
         });
-
-        // 3. Save the order
-        await order.save();
         
+        await order.save();
       } else if (statusResponse.state === "FAILED") {
         order.status = "FAILED";
         await order.save();
@@ -227,7 +223,7 @@ router.get("/status/:orderId", async (req, res) => {
 
     res.json({
         success: true, 
-        state: statusResponse.state, // 'COMPLETED', 'FAILED', 'PENDING'
+        state: statusResponse.state, 
         order: order 
     });
 
